@@ -13,6 +13,13 @@ This project is built with the following technologies:
 - **Icons**: Lucide React, React Icons
 - **Linting**: ESLint
 
+## Features
+
+- **Pregnancy Tracking**: Track your pregnancy journey, weekly progress, and baby's development.
+- **Symptom Checker**: Interactive tool to check symptoms, assess risk levels, and get guidance on next steps.
+- **Dashboard**: Centralized hub to view your status, upcoming appointments, and access tools.
+- **Responsive Design**: Mobile-friendly interface for easy access on any device.
+
 ## Project Structure
 
 ```
@@ -21,11 +28,18 @@ Bump2Baby/
 ├── src/
 │   ├── assets/          # Project assets
 │   │   └── react.svg
-│   ├── components/      # React components
+│   ├── components/      # Shared React components
 │   │   ├── home/
 │   │   │   └── Home.jsx
 │   │   ├── ProgressBar.jsx
 │   │   └── Steps.jsx
+│   ├── dashboard/       # Dashboard & Symptom Checker feature
+│   │   ├── components/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Header.jsx
+│   │   │   └── SymptomFlow.jsx
+│   │   ├── Constants.jsx
+│   │   └── MainRender.jsx
 │   ├── App.css          # App-wide styles
 │   ├── App.jsx          # Main App component
 │   ├── index.css        # Global styles (Tailwind imports)
