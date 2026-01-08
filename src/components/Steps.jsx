@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-// import { OnboardingRole } from '../types';
+import { FaHeart } from "react-icons/fa6";
 
 
 export const StepCard = ({ children }) => (
@@ -246,24 +246,24 @@ export const FinalSuccessStep = () => (
     <div className="grid grid-cols-3 gap-3 w-full mb-10">
       <div className="bg-[#F4F1FB] p-4 rounded-3xl flex flex-col items-center">
         <div className="mb-2">📱</div>
-        <span className="text-[8px] font-bold text-gray-800 text-center">track progress</span>
-        <span className="text-[6px] text-gray-400 text-center">milestones & updates at your fingertips</span>
+        <span className="text-[12px] font-bold text-gray-800 text-center">track progress</span>
+        <span className="text-[10px] text-gray-400 text-center">milestones & updates at your fingertips</span>
       </div>
       <div className="bg-[#E7F7FF] p-4 rounded-3xl flex flex-col items-center">
         <div className="mb-2">👥</div>
-        <span className="text-[8px] font-bold text-gray-800 text-center">connect</span>
-        <span className="text-[6px] text-gray-400 text-center">expert advice & community support</span>
+        <span className="text-[12px] font-bold text-gray-800 text-center">connect</span>
+        <span className="text-[10px] text-gray-400 text-center">expert advice & community support</span>
       </div>
       <div className="bg-[#FFF0F4] p-4 rounded-3xl flex flex-col items-center">
         <div className="mb-2">💡</div>
-        <span className="text-[8px] font-bold text-gray-800 text-center">learn</span>
-        <span className="text-[6px] text-gray-400 text-center">expert tips & personal guidance</span>
+        <span className="text-[12px] font-bold text-gray-800 text-center">learn</span>
+        <span className="text-[10px] text-gray-400 text-center">expert tips & personal guidance</span>
       </div>
     </div>
 
     <button className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-[#c1325d] transition-colors">
-      Go to Dashboard <span className="text-sm">❤️</span>
+      Go to Dashboard <span className="text-sm text-white">< FaHeart /></span>
     </button>
-    <p className="mt-6 text-[9px] text-gray-300 font-medium">need help? we're here for you 24/7</p>
+    <p className="mt-6 text-[13px] text-gray-300 font-medium">need help? we're here for you 24/7</p>
   </StepCard>
 );

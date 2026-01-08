@@ -1,11 +1,6 @@
 
 import React from 'react';
 
-// interface ProgressBarProps {
-//   currentStep: number;
-//   totalSteps: number;
-// }
-
 const ProgressBar = ({ currentStep, totalSteps }) => {
   const percentage = Math.min(Math.round(((currentStep) / totalSteps) * 100), 100);
 

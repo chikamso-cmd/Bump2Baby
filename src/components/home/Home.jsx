@@ -12,6 +12,8 @@ import {
 } from '../Steps';
 import { OnboardingStep } from '../../types';
 
+const getYear = () => new Date().getFullYear();
+
 const Home = () => {
   const [step, setStep] = useState(OnboardingStep.Welcome);
   const [data, setData] = useState({
@@ -91,7 +93,7 @@ const Home = () => {
         {/* Branding Footer */}
         {step === OnboardingStep.Welcome && (
           <div className="mt-8 text-center text-[10px] text-gray-300 font-bold uppercase tracking-widest">
-            Bump2baby &copy; 2024 • All Rights Reserved
+            Bump2baby &copy; {getYear()} • All Rights Reserved
           </div>
         )}
       </div>
