@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { FaHeart } from "react-icons/fa6";
+import { Link } from 'react-router-dom';
 
 
 export const StepCard = ({ children }) => (
@@ -261,9 +262,11 @@ export const FinalSuccessStep = () => (
       </div>
     </div>
 
+    <Link to="/dashboard" className='w-full'>
     <button className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-[#c1325d] transition-colors">
       Go to Dashboard <span className="text-sm text-white">< FaHeart /></span>
     </button>
+    </Link>
     <p className="mt-6 text-[13px] text-gray-300 font-medium">need help? we're here for you 24/7</p>
   </StepCard>
 );
