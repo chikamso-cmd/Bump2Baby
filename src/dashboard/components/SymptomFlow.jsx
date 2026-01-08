@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, Search, X, Check, Info, ShieldAlert, MapPin, Users, History, AlertCircle } from 'lucide-react';
-import { ALL_SYMPTOMS, SYMPTOM_CHECKER_STEPS } from '../constants';
+import { ALL_SYMPTOMS, SYMPTOM_CHECKER_STEPS } from '../Constants';
 // import { AppView, Symptom, GuidanceData } from '../types';
 
 // interface SymptomFlowProps {
