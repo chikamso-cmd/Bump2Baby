@@ -109,17 +109,42 @@ export const BabyAgeStep = ({ selected, onSelect, onNext }) => {
 };
 
 // account creation step
-export const AccountStep = ({ onNext }) => (
-  <StepCard>
-    <h2 className="text-xl font-bold text-gray-800 mb-1">Let's get to know you</h2>
-    <p className="text-gray-400 text-xs mb-8">Create account to continue</p>
-    <div className="w-full space-y-4">
-      <input type="text" placeholder="Full Name" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" />
-      <input type="email" placeholder="Email Address" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" />
-      <input type="password" placeholder="Create Password" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" />
-      <button onClick={onNext} className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold hover:bg-[#c1325d] transition-colors mt-2">
-        Continue
-      </button>
+export const AccountStep = ({ onNext }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onNext();
+  };
+
+  return (
+    <StepCard>
+      <h2 className="text-xl font-bold text-gray-800 mb-1">Let's get to know you</h2>
+      <p className="text-gray-400 text-xs mb-8">Create account to continue</p>
+      <form onSubmit={handleSubmit} className="w-full space-y-4">
+        <input 
+          type="text" 
+          placeholder="Full Name" 
+          required 
+          autoComplete="off"
+          className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" 
+        />
+        <input 
+          type="email" 
+          placeholder="Email Address" 
+          required 
+          autoComplete="off"
+          className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" 
+        />
+        <input 
+          type="password" 
+          placeholder="Create Password" 
+          required 
+          autoComplete="new-password"
+          className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" 
+        />
+        <button type="submit" className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold hover:bg-[#c1325d] transition-colors mt-2">
+          Continue
+        </button>
+      
 
       {/* Reference Image Section Start */}
       <div className="pt-4 space-y-6">
@@ -151,9 +176,10 @@ export const AccountStep = ({ onNext }) => (
           </button>
         </div>
       </div>
-    </div>
-  </StepCard>
-);
+      </form>
+    </StepCard>
+  );
+};
 
 // account ready step
 export const AccountReadyStep = ({ onNext }) => (

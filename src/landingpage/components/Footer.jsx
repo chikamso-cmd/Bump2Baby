@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import logo from '../../assets/Logo.png';
 
 const Footer = () => {
   return (
@@ -9,10 +11,7 @@ const Footer = () => {
           {/* Brand Col */}
           <div className="md:col-span-2">
              <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-[#e83e8c] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">B</span>
-              </div>
-              <span className="text-2xl font-bold tracking-tight text-[#e83e8c]">Bump2baby</span>
+             <Link to="/"><img src={logo} className="w-50" alt="Logo" /></Link>
             </div>
             <p className="text-gray-500 max-w-sm leading-relaxed">
               Your trusted companion for pregnancy and early parenting. Expert guidance, personalized tracking, and community support, all in one place.
