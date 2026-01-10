@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+.gradient-cta {
+    background: linear-gradient(120deg, #CE3872, #155DFC);
+}
+.bg{
+    background: url(../src/assets/hero.png);
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
