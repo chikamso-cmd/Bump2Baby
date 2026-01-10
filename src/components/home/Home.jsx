@@ -1,5 +1,5 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ProgressBar from '../ProgressBar';
 import { 
   WelcomeStep, 
@@ -15,6 +15,15 @@ import { OnboardingStep } from '../../types';
 const getYear = () => new Date().getFullYear();
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const onboarded = localStorage.getItem('bump2baby_onboarded');
+    if (onboarded === 'true') {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
+
   const [step, setStep] = useState(OnboardingStep.Welcome);
   const [data, setData] = useState({
     role: null,

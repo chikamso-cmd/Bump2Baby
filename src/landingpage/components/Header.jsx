@@ -1,9 +1,16 @@
-
 import React, { useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/Logo.png'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    const onboarded = localStorage.getItem('bump2baby_onboarded');
+    navigate(onboarded === 'true' ? '/dashboard' : '/home');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
@@ -11,10 +18,8 @@ const Header = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#e83e8c] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">B</span>
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-[#e83e8c]">Bump2baby</span>
+            <img src={logo} alt="Logo" className="w-50" />
+            {/* <span className="text-2xl font-bold tracking-tight text-[#e83e8c]">Bump2baby</span> */}
           </div>
 
           {/* Desktop Nav */}
@@ -30,7 +35,10 @@ const Header = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <button className="bg-[#e83e8c] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#d63384] transition-all transform hover:scale-105">
+            <button 
+              onClick={handleGetStarted}
+              className="bg-[#e83e8c] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#d63384] transition-all transform hover:scale-105"
+            >
               Get Started
             </button>
           </div>
@@ -55,7 +63,10 @@ const Header = () => {
             <a href="#" className="block px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50">Features</a>
             <a href="#" className="block px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50">About us</a>
             <div className="pt-4">
-              <button className="w-full bg-[#e83e8c] text-white px-6 py-3 rounded-xl font-semibold">
+              <button 
+                onClick={handleGetStarted}
+                className="w-full bg-[#e83e8c] text-white px-6 py-3 rounded-xl font-semibold"
+              >
                 Get Started
               </button>
             </div>

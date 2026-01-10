@@ -262,7 +262,11 @@ export const FinalSuccessStep = () => (
       </div>
     </div>
 
-    <Link to="/dashboard" className='w-full'>
+    <Link 
+      to="/dashboard" 
+      className='w-full'
+      onClick={() => localStorage.setItem('bump2baby_onboarded', 'true')}
+    >
     <button className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-[#c1325d] transition-colors">
       Go to Dashboard <span className="text-sm text-white">< FaHeart /></span>
     </button>

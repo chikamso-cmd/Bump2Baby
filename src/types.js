@@ -1,5 +1,5 @@
 
-export const OnboardingRole = 'pregnant' | 'new-parent' | 'caregiver' | null;
+// export const OnboardingRole = 'pregnant' | 'new-parent' | 'caregiver' | null;
 
 export const OnboardingStep = {
   Welcome: 0,
@@ -11,28 +11,11 @@ export const OnboardingStep = {
   FinalSuccess: 6    
 }
 
-export const AppView = 'DASHBOARD' | 'SYMPTOM_INTRO' | 'SYMPTOM_SELECT' | 'SYMPTOM_DETAILS' | 'SYMPTOM_RESULT';
+// export const AppView = 'DASHBOARD' | 'SYMPTOM_INTRO' | 'SYMPTOM_SELECT' | 'SYMPTOM_DETAILS' | 'SYMPTOM_RESULT';
 
-// export const Symptom {
-//   id: string;
-//   label: string;
-// }
 
-// export const GuidanceData {
-//   riskLevel : 'Low Risk' | 'Moderate Risk' | 'High Risk';
-//   riskColor: string;
-//   action: string;
-//   causes: string;
-//   tips: string;
-//   monitorFor: string;
-// }
+// export const Page = 'profile' | 'edit-profile' | 'preferences' | 'account-actions';
 
-// export const UserState {
-//   name: string;
-//   email: string;
-//   phone: string;
-//   role: OnboardingRole;
-//   journeyStage: number;
-//   babyAgeMonths: number;
-// }
+
+
 
