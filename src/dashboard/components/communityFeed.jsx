@@ -1,17 +1,113 @@
 import React, { useState } from 'react';
-import { Search, MessageCircle, Heart, TrendingUp, Clock, ChevronDown } from 'lucide-react';
+import { Search, MessageCircle, Heart, TrendingUp, Clock, CheckCircle2 } from 'lucide-react';
 
-const CommunityFeed = ({ onNavigate, posts = [] }) => {
+const CommunityFeed = ({ onNavigate }) => {
   const categories = ["All", "Pregnancy", "New Parents", "Health & Wellness", "General"];
   
-  // 1. Add state for the search query
+  const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 2. Filter posts based on the search query
-  const filteredPosts = posts.filter((post) =>
-    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // 1. Data exactly as marked in your screenshots
+  const staticPosts = [
+    {
+      id: 1,
+      category: "Health & Wellness",
+      isHelpful: true,
+      title: "First trimester exhaustion - when does it get better?",
+      content: "I'm 8 weeks pregnant and can barely keep my eyes open by 2pm. Is this normal? How long did this last for you?",
+      user: "Sarah M.",
+      replies: 12,
+      likes: 24,
+      date: "2 hours ago"
+    },
+    {
+      id: 2,
+      category: "New Parents",
+      isHelpful: false,
+      title: "Recommended baby monitors?",
+      content: "Looking for a reliable baby monitor with video. What brands do you trust and recommend?",
+      user: "Jessica L.",
+      replies: 18,
+      likes: 15,
+      date: "4 hours ago"
+    },
+    {
+      id: 3,
+      category: "Pregnancy",
+      isHelpful: true,
+      title: "Dealing with morning sickness at work",
+      content: "Any tips for managing nausea while working? I haven't told my boss yet and it's getting harder to hide.",
+      user: "Anonymous",
+      replies: 31,
+      likes: 45,
+      date: "5 hours ago"
+    },
+    {
+      id: 4,
+      category: "Pregnancy",
+      isHelpful: false,
+      title: "When did you start showing?",
+      content: "I'm 14 weeks and still waiting for a visible bump. First pregnancy - is this normal?",
+      user: "Emily R.",
+      replies: 27,
+      likes: 32,
+      date: "1 day ago"
+    },
+    {
+      id: 5,
+      category: "New Parents",
+      isHelpful: true,
+      title: "Sleep training methods - gentle approaches?",
+      content: "My 4-month-old still wakes every 2 hours. Looking for gentle sleep training methods that worked for you.",
+      user: "Anonymous",
+      replies: 42,
+      likes: 58,
+      date: "1 day ago"
+    },
+    {
+      id: 6,
+      category: "Health & Wellness",
+      isHelpful: false,
+      title: "Prenatal yoga recommendations",
+      content: "Has anyone tried prenatal yoga? Did it help the back pain and stress? Any YouTube channels or apps you recommend?",
+      user: "Amanda k.",
+      replies: 19,
+      likes: 28,
+      date: "2 days ago"
+    },
+    {
+      id: 7,
+      category: "Health & Wellness",
+      isHelpful: true,
+      title: "Post-partum hair loss when does it stop?",
+      content: "I'm 4 months post-partum and losing so much hair! Please tell me this is temporary.",
+      user: "Rachel T.",
+      replies: 23,
+      likes: 38,
+      date: "2 days ago"
+    },
+    {
+      id: 8,
+      category: "General",
+      isHelpful: false,
+      title: "Partner support during pregnancy",
+      content: "How did you help your partner understand what you're going through? Looking for ways to communicate better.",
+      user: "Anonymous",
+      replies: 16,
+      likes: 21,
+      date: "3 days ago"
+    }
+  ];
+
+  // 2. Filter Logic: Handles both the Category selection AND Search text
+  const filteredPosts = staticPosts.filter((post) => {
+    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         post.content.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = activeCategory === "All" || post.category === activeCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
@@ -22,8 +118,9 @@ const CommunityFeed = ({ onNavigate, posts = [] }) => {
           {categories.map((cat, i) => (
             <button 
               key={i}
-              className={`px-5 md:px-7 py-2 md:py-2.5 rounded-xl text-xs md:text-sm font-bold border transition-all whitespace-nowrap snap-start
-                ${cat === 'Pregnancy' || cat === 'Health & Wellness' 
+              onClick={() => setActiveCategory(cat)}
+              className={`px-5 md:px-7 py-2 md:py-2.5 rounded-xl text-xs md:text-sm font-bold border transition-all duration-200 whitespace-nowrap snap-start active:scale-95
+                ${activeCategory === cat 
                   ? 'bg-[#D5335E] text-white border-[#D5335E] shadow-lg shadow-pink-100' 
                   : 'bg-white text-pink-600 border-gray-100 hover:border-pink-200'}`}
             >
@@ -36,7 +133,6 @@ const CommunityFeed = ({ onNavigate, posts = [] }) => {
         <div className="flex flex-col md:flex-row gap-3 md:gap-4 mb-8">
           <div className="relative flex-1 group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors" size={20} />
-            {/* 3. Connect input to search state */}
             <input 
               type="text" 
               placeholder="Search community posts..."
@@ -53,52 +149,51 @@ const CommunityFeed = ({ onNavigate, posts = [] }) => {
           </button>
         </div>
 
-        {/* Sort Filters */}
-        <div className="flex items-center gap-4 md:gap-8 mb-8 text-[11px] md:text-sm font-bold text-gray-500 overflow-x-auto whitespace-nowrap no-scrollbar">
-          <span className="text-gray-400 uppercase tracking-widest text-[10px]">Sort by:</span>
-          <button className="flex items-center gap-2 text-pink-600 border-b-2 border-pink-600 pb-1 px-1">
-            <Clock size={16}/> Latest
-          </button>
-          <button className="flex items-center gap-2 hover:text-pink-600 transition-colors pb-1">
-             Trending <TrendingUp size={16}/>
-          </button>
+        {/* Disclaimer Box */}
+        <div className="bg-[#FFF4E8] border border-orange-100 p-4 rounded-2xl mb-10 flex items-center gap-3">
+          <Heart size={16} className="text-orange-400 fill-orange-400 shrink-0" />
+          <p className="text-[11px] md:text-sm text-orange-900/70 leading-relaxed font-medium">
+            This community does not replace professional medical advice. Please consult your healthcare provider for medical concerns.
+          </p>
         </div>
 
         {/* Dynamic Post Cards */}
         <div className="space-y-6">
-          {/* 4. Map over filteredPosts instead of posts */}
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
               <div 
                 key={post.id} 
-                className="bg-white rounded-[24px] md:rounded-[40px] p-5 md:p-10 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer group animate-in slide-in-from-bottom-2 duration-300"
+                className="bg-white rounded-[24px] md:rounded-[32px] p-6 md:p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group animate-in slide-in-from-bottom-2 duration-300"
               >
-                <div className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-lg border-2 border-pink-50 text-pink-600 text-[10px] md:text-xs font-black uppercase tracking-wider mb-4">
-                  {post.category}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="px-3 py-1 rounded-lg border border-pink-100 text-[#D5335E] text-[10px] font-bold uppercase tracking-wider">
+                    {post.category}
+                  </div>
+                  {post.isHelpful && (
+                    <div className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold border border-green-100">
+                      <CheckCircle2 size={12} /> Helpful
+                    </div>
+                  )}
                 </div>
-                <h2 className="text-lg md:text-2xl font-extrabold text-slate-800 mb-3 leading-tight group-hover:text-[#D5335E] transition-colors">
+
+                <h2 className="text-lg md:text-xl font-extrabold text-slate-800 mb-2 leading-tight group-hover:text-[#D5335E] transition-colors">
                   {post.title}
                 </h2>
-                <p className="text-slate-500 text-sm md:text-base mb-6 leading-relaxed max-w-2xl font-medium">
+                <p className="text-slate-500 text-sm md:text-base mb-6 leading-relaxed">
                   {post.content}
                 </p>
                 
-                <div className="flex flex-wrap items-center gap-3 md:gap-6 pt-6 border-t border-gray-50 text-gray-400 text-[11px] md:text-sm">
+                <div className="flex items-center gap-4 md:gap-6 pt-5 border-t border-gray-50 text-gray-400 text-[11px] md:text-sm font-medium">
                   <span className="font-bold text-slate-700">{post.user}</span>
-                  <div className="flex items-center gap-1.5">
-                    <MessageCircle size={18} className="text-slate-300"/> {post.replies} replies
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Heart size={18} className="text-slate-300"/> {post.likes}
-                  </div>
-                  <span className="text-gray-300">•</span>
-                  <span>{post.date}</span>
+                  <div className="flex items-center gap-1.5"><MessageCircle size={16}/> {post.replies} replies</div>
+                  <div className="flex items-center gap-1.5"><Heart size={16}/> {post.likes}</div>
+                  <span className="ml-auto text-gray-300 text-[10px]">{post.date}</span>
                 </div>
               </div>
             ))
           ) : (
             <div className="text-center py-20 bg-white rounded-[40px] border border-dashed border-gray-200">
-              <p className="text-gray-400">No posts match "{searchQuery}"</p>
+              <p className="text-gray-400">No posts match your filters.</p>
             </div>
           )}
         </div>
