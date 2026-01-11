@@ -3,6 +3,8 @@ import MainRender from './dashboard/MainRender'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from './landingpage/LandingPAge'
 import Profile from './profile/Profile'
+import CommunityFeed from './dashboard/components/communityFeed';
+import CreatePost from './dashboard/components/communityCreatePost';
 
 function App() {
   
@@ -15,6 +17,8 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/dashboard" element={<MainRender />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/community" element={<CommunityFeed />} />
+        <Route path="/community/create" element={<CreatePost />} />
         </Routes>
       </BrowserRouter>
     </>
