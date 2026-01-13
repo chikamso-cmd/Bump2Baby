@@ -154,9 +154,12 @@ const Dashboard = ({ user, onNavigate }) => {
               text="Best baby monitors? Looking for recommendations"
             />
           </div>
-          <button className="w-full mt-6 bg-[#D63D6C] text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#c2335f] transition-colors">
-            Join the conversation <ChevronRight className="w-4 h-4" />
-          </button>
+<button 
+  onClick={() => onNavigate('COMMUNITY_INTRO')}
+  className="w-full mt-6 bg-[#D63D6C] text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#c2335f] transition-colors"
+>
+  Join the conversation <ChevronRight className="w-4 h-4" />
+</button>
         </div>
       </div>
     </div>

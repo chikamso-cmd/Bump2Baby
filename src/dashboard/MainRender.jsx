@@ -11,7 +11,15 @@ const MainRender = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [view, setView] = useState(searchParams.get('view') || 'DASHBOARD');
   
-  // 1. Initial Community Posts State
+  // 1. ADDED: User state definition (This fixes your ReferenceError)
+  const [user] = useState({
+    name: 'Mary',
+    isPregnancy: true,
+    pregnancyWeek: 8,
+    babyAgeMonths: 5
+  });
+
+  // 2. Initial Community Posts State
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -21,17 +29,12 @@ const MainRender = () => {
       replies: 19,
       likes: 28,
       category: "Health & Wellness",
-      date: "2 days ago"
+      date: "2 days ago",
+      isHelpful: false
     }
   ]);
 
-  const [user] = useState({
-    name: 'Mary',
-    isPregnancy: true,
-    pregnancyWeek: 8,
-    babyAgeMonths: 5
-  });
-
+  // Sync view with URL search params
   useEffect(() => {
     const viewParam = searchParams.get('view');
     if (viewParam && viewParam !== view) {
@@ -39,16 +42,37 @@ const MainRender = () => {
     }
   }, [searchParams]);
 
-  // 2. Navigation handler that updates URL
+  // Navigation handler
   const handleNavigate = (newView) => {
     setView(newView);
     setSearchParams({ view: newView });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 3. Function to add a new post to the list
-  const addNewPost = (newPost) => {
-    setPosts([newPost, ...posts]); // Put the newest post at the top
+  // 3. CORRECTED: addNewPost function
+  const addNewPost = (postData) => {
+    console.log("Data received from form:", postData);
+
+    const newEntry = {
+      id: Date.now(),
+      // Uses postData logic, or falls back to user state, or finally "Mary"
+      user: postData.isAnonymous ? "Anonymous Member" : (user?.name || "Mary"),
+      title: postData.title,
+      category: postData.category,
+      content: postData.content,
+      replies: 0,
+      likes: 0,
+      date: "Just now",
+      isHelpful: false
+    };
+
+    // Update state to include the new post
+    setPosts((prevPosts) => [newEntry, ...prevPosts]);
+    
+    // Auto-navigate back to the feed after the success animation
+    setTimeout(() => {
+      handleNavigate('COMMUNITY_INTRO');
+    }, 2000);
   };
 
   return (
@@ -70,7 +94,7 @@ const MainRender = () => {
           />
         )}
 
-        {/* Community Feed - Receives the posts list */}
+        {/* Community Feed */}
         {view === 'COMMUNITY_INTRO' && (
           <CommunityFeed 
             posts={posts} 
@@ -78,7 +102,7 @@ const MainRender = () => {
           />
         )}
 
-        {/* Create Post Form - Receives the function to add data */}
+        {/* Create Post Form */}
         {view === 'COMMUNITY_CREATE' && (
           <CreatePost 
             onNavigate={handleNavigate} 
