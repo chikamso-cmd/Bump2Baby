@@ -11,54 +11,79 @@ import HealthTips from "./components/HealthTips";
 
 const MainRender = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [view, setView] = useState(searchParams.get("view") || "DASHBOARD");
-
-  // 1. User state definition
-  const [user] = useState({
-    name: "Mary",
-    isPregnancy: true,
-    pregnancyWeek: 8,
-    babyAgeMonths: 5,
+  const [view, setView] = useState(searchParams.get('view') || 'DASHBOARD');
+  
+  // 1. PERSISTENT USER STATE: Initialize from localStorage (Your branch logic)
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('bump2baby_user');
+    if (savedUser) {
+      try {
+        return JSON.parse(savedUser);
+      } catch (e) {
+        console.error("Error parsing saved user:", e);
+      }
+    }
+    // Fallback default
+    return {
+      name: 'Mary',
+      isPregnancy: true,
+      pregnancyWeek: 8,
+      babyAgeMonths: 5
+    };
   });
 
-  // 2. Initial Community Posts State
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      user: "Amanda k.",
-      title: "Prenatal yoga recommendations",
-      content:
-        "Has anyone tried prenatal yoga? Did it help the back pain and stress? Any YouTube channels or apps you recommend?",
-      replies: 19,
-      likes: 28,
-      category: "Health & Wellness",
-      date: "2 days ago",
-      isHelpful: false,
-    },
-  ]);
+  // 2. PERSISTENT POSTS STATE: Initialize from localStorage
+  const [posts, setPosts] = useState(() => {
+    const savedPosts = localStorage.getItem('bump2baby_posts');
+    if (savedPosts) {
+      try {
+        return JSON.parse(savedPosts);
+      } catch (e) {
+        console.error("Error parsing saved posts:", e);
+      }
+    }
+    return [
+      {
+        id: 1,
+        user: "Amanda k.",
+        title: "Prenatal yoga recommendations",
+        content: "Has anyone tried prenatal yoga? Did it help the back pain and stress?",
+        replies: 19,
+        likes: 28,
+        category: "Health & Wellness",
+        date: "2 days ago",
+        isHelpful: false
+      }
+    ];
+  });
 
-  // Sync view with URL search params
+  // Sync state back to localStorage whenever they change
   useEffect(() => {
-    const viewParam = searchParams.get("view");
+    localStorage.setItem('bump2baby_posts', JSON.stringify(posts));
+  }, [posts]);
+
+  useEffect(() => {
+    localStorage.setItem('bump2baby_user', JSON.stringify(user));
+  }, [user]);
+
+  // Sync view state with URL parameters
+  useEffect(() => {
+    const viewParam = searchParams.get('view');
     if (viewParam && viewParam !== view) {
       setView(viewParam);
     }
-  }, [searchParams]);
+  }, [searchParams, view]);
 
-  // Navigation handler
   const handleNavigate = (newView) => {
     setView(newView);
     setSearchParams({ view: newView });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // 3. addNewPost function
   const addNewPost = (postData) => {
-    console.log("Data received from form:", postData);
-
     const newEntry = {
       id: Date.now(),
-      user: postData.isAnonymous ? "Anonymous Member" : user?.name || "Mary",
+      user: postData.isAnonymous ? "Anonymous Member" : (user?.name || "Mary"),
       title: postData.title,
       category: postData.category,
       content: postData.content,
@@ -75,39 +100,53 @@ const MainRender = () => {
     }, 2000);
   };
 
+  const isKnownView = [
+    'DASHBOARD', 
+    'COMMUNITY_INTRO', 
+    'COMMUNITY_CREATE', 
+    'HOSPITAL_INTRO', 
+    'HEALTH_TIPS'
+  ].includes(view) || view.startsWith('SYMPTOM_');
+
   return (
     <div className="min-h-screen bg-[#F8FAFF]">
       <Header activeView={view} onNavigate={handleNavigate} />
 
       <main className="pb-12">
-        {/* Dashboard View */}
-        {view === "DASHBOARD" && (
+        {/* Dashboard View (Default) */}
+        {(view === 'DASHBOARD' || !isKnownView) && (
           <Dashboard user={user} onNavigate={handleNavigate} />
         )}
-
+        
         {/* Symptom Checker Flow */}
-        {view.startsWith("SYMPTOM_") && (
-          <SymptomFlow
-            currentStep={view}
-            setCurrentStep={setView}
-            onBack={() => setView("DASHBOARD")}
+        {view.startsWith('SYMPTOM_') && (
+          <SymptomFlow 
+            currentStep={view} 
+            setCurrentStep={setView} 
+            onBack={() => setView('DASHBOARD')} 
           />
         )}
 
         {/* Community Feed */}
-        {view === "COMMUNITY_INTRO" && (
-          <CommunityFeed posts={posts} onNavigate={handleNavigate} />
+        {view === 'COMMUNITY_INTRO' && (
+          <CommunityFeed 
+            posts={posts} 
+            onNavigate={handleNavigate} 
+          />
         )}
 
         {/* Create Post Form */}
-        {view === "COMMUNITY_CREATE" && (
-          <CreatePost onNavigate={handleNavigate} onAddPost={addNewPost} />
+        {view === 'COMMUNITY_CREATE' && (
+          <CreatePost 
+            onNavigate={handleNavigate} 
+            onAddPost={addNewPost} 
+          />
         )}
 
-        {/* Hospital Finder */}
+        {/* Hospital Finder (New Feature from Main) */}
         {view === "HOSPITAL_INTRO" && <HospitalFinder />}
 
-        {/* Health Tips */}
+        {/* Health Tips (New Feature from Main) */}
         {view === "HEALTH_TIPS" && (
           <HealthTips onBack={() => setView("DASHBOARD")} />
         )}

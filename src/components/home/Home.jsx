@@ -20,14 +20,17 @@ const Home = () => {
   useEffect(() => {
     const onboarded = localStorage.getItem('bump2baby_onboarded');
     if (onboarded === 'true') {
-      navigate('/dashboard', { replace: true });
+      navigate('/app', { replace: true });
     }
   }, [navigate]);
 
   const [step, setStep] = useState(OnboardingStep.Welcome);
+  
+  // UPDATED: Added 'username' to the state object
   const [data, setData] = useState({
     role: null,
-    fullName: 'Mary', // Hardcoded for final screen demo as per "You're all set, Mary!"
+    fullName: '', 
+    username: '', // New field for login handle
     email: '',
     journeyStage: null,
     babyAge: null
@@ -45,43 +48,64 @@ const Home = () => {
     }
   };
 
-  const updateRole = (role) => setData({ ...data, role });
-  const updateBabyAge = (babyAge) => setData({ ...data, babyAge });
+  const updateData = (fields) => setData(prev => ({ ...prev, ...fields }));
 
   const renderStep = () => {
     switch (step) {
       case OnboardingStep.Welcome:
         return <WelcomeStep onNext={nextStep} />;
+      
       case OnboardingStep.RoleSelection:
-        return <RoleStep selected={data.role} onSelect={updateRole} onNext={nextStep} />;
+        return <RoleStep 
+                 selected={data.role} 
+                 onSelect={(role) => updateData({ role })} 
+                 onNext={nextStep} 
+               />;
+      
       case OnboardingStep.JourneyDetail:
-        // In the reference image, it shows the baby age selection grid
-        return <BabyAgeStep selected={data.babyAge} onSelect={updateBabyAge} onNext={nextStep} />;
+        return <BabyAgeStep 
+                 selected={data.babyAge} 
+                 onSelect={(babyAge) => updateData({ babyAge })} 
+                 onNext={nextStep} 
+               />;
+      
       case OnboardingStep.AccountCreation:
-        return <AccountStep onNext={nextStep} />;
+        // UPDATED: Now passing both setUserName and setHandle 
+        return <AccountStep 
+                 onNext={nextStep} 
+                 setUserName={(name) => updateData({ fullName: name })} 
+                 setHandle={(handle) => updateData({ username: handle })} 
+               />;
+      
       case OnboardingStep.AccountReady:
         return <AccountReadyStep onNext={nextStep} />;
+      
       case OnboardingStep.Personalize:
         return <PersonalizeStep onNext={nextStep} />;
-      case OnboardingStep.FinalSuccess:
-        return <FinalSuccessStep />;
+      
+   case OnboardingStep.FinalSuccess:
+  return <FinalSuccessStep 
+           userName={data.fullName} 
+           handle={data.username}
+           role={data.role}
+           babyAge={data.babyAge} // Add this line!
+         />;
+      
       default:
         return <WelcomeStep onNext={nextStep} />;
     }
   };
 
-  const totalSteps = 6; // Excluding Welcome and FinalSuccess from bar if needed, or including them
+  const totalSteps = 6;
 
   return (
     <div className="min-h-screen bg-[#F4F7FF] flex flex-col items-center justify-center p-4">
-      {/* Background decoration elements */}
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-pink-50 rounded-full blur-[100px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-50 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Main Content Area */}
       <div className="w-full max-w-2xl relative z-10">
         {step !== OnboardingStep.Welcome && step !== OnboardingStep.FinalSuccess && (
-          <div className="relative">
+          <div className="relative mb-8">
             <ProgressBar currentStep={step} totalSteps={totalSteps} />
             <button 
               onClick={prevStep}
@@ -99,7 +123,6 @@ const Home = () => {
           {renderStep()}
         </div>
 
-        {/* Branding Footer */}
         {step === OnboardingStep.Welcome && (
           <div className="mt-8 text-center text-[10px] text-gray-300 font-bold uppercase tracking-widest">
             Bump2baby &copy; {getYear()} • All Rights Reserved
