@@ -9,34 +9,19 @@ const CreatePost = ({ onNavigate, onAddPost }) => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // 2. Corrected Handle Submit using State instead of e.target indices
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault(); // Stops page from refreshing
+  
+  // Explicitly sending the state values
+  onAddPost({
+    title: title,
+    category: category,
+    content: content,
+    isAnonymous: isAnonymous
+  });
 
-    const formData = {
-      id: Date.now(),
-      user: isAnonymous ? "Anonymous Member" : "Mary",
-      title: title,       // Captured from state
-      category: category, // Captured from state
-      content: content,   // Captured from state
-      replies: 0,
-      likes: 0,
-      date: "Just now"
-    };
-
-    // Send the data up to MainRender
-    if (onAddPost) {
-      onAddPost(formData);
-    }
-    
-    // Trigger Success UI
-    setShowSuccess(true);
-    
-    // Return to feed after 2 seconds
-    setTimeout(() => {
-      onNavigate('COMMUNITY_INTRO');
-    }, 2000);
-  };
+  setShowSuccess(true);
+};
 
   // Success View
   if (showSuccess) {
@@ -109,6 +94,8 @@ const CreatePost = ({ onNavigate, onAddPost }) => {
                   <option value="Pregnancy">Pregnancy</option>
                   <option value="Health & Wellness">Health & Wellness</option>
                   <option value="Baby Care">Baby Care</option>
+                  <option value="New Parents">New Parents</option>
+                  <option value="General">General</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">▼</div>
               </div>

@@ -1,108 +1,18 @@
 import React, { useState } from 'react';
 import { Search, MessageCircle, Heart, TrendingUp, Clock, CheckCircle2 } from 'lucide-react';
 
-const CommunityFeed = ({ onNavigate }) => {
+// Added 'posts' as a prop to receive real-time data from MainRender
+const CommunityFeed = ({ onNavigate, posts = [] }) => {
   const categories = ["All", "Pregnancy", "New Parents", "Health & Wellness", "General"];
   
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 1. Data exactly as marked in your screenshots
-  const staticPosts = [
-    {
-      id: 1,
-      category: "Health & Wellness",
-      isHelpful: true,
-      title: "First trimester exhaustion - when does it get better?",
-      content: "I'm 8 weeks pregnant and can barely keep my eyes open by 2pm. Is this normal? How long did this last for you?",
-      user: "Sarah M.",
-      replies: 12,
-      likes: 24,
-      date: "2 hours ago"
-    },
-    {
-      id: 2,
-      category: "New Parents",
-      isHelpful: false,
-      title: "Recommended baby monitors?",
-      content: "Looking for a reliable baby monitor with video. What brands do you trust and recommend?",
-      user: "Jessica L.",
-      replies: 18,
-      likes: 15,
-      date: "4 hours ago"
-    },
-    {
-      id: 3,
-      category: "Pregnancy",
-      isHelpful: true,
-      title: "Dealing with morning sickness at work",
-      content: "Any tips for managing nausea while working? I haven't told my boss yet and it's getting harder to hide.",
-      user: "Anonymous",
-      replies: 31,
-      likes: 45,
-      date: "5 hours ago"
-    },
-    {
-      id: 4,
-      category: "Pregnancy",
-      isHelpful: false,
-      title: "When did you start showing?",
-      content: "I'm 14 weeks and still waiting for a visible bump. First pregnancy - is this normal?",
-      user: "Emily R.",
-      replies: 27,
-      likes: 32,
-      date: "1 day ago"
-    },
-    {
-      id: 5,
-      category: "New Parents",
-      isHelpful: true,
-      title: "Sleep training methods - gentle approaches?",
-      content: "My 4-month-old still wakes every 2 hours. Looking for gentle sleep training methods that worked for you.",
-      user: "Anonymous",
-      replies: 42,
-      likes: 58,
-      date: "1 day ago"
-    },
-    {
-      id: 6,
-      category: "Health & Wellness",
-      isHelpful: false,
-      title: "Prenatal yoga recommendations",
-      content: "Has anyone tried prenatal yoga? Did it help the back pain and stress? Any YouTube channels or apps you recommend?",
-      user: "Amanda k.",
-      replies: 19,
-      likes: 28,
-      date: "2 days ago"
-    },
-    {
-      id: 7,
-      category: "Health & Wellness",
-      isHelpful: true,
-      title: "Post-partum hair loss when does it stop?",
-      content: "I'm 4 months post-partum and losing so much hair! Please tell me this is temporary.",
-      user: "Rachel T.",
-      replies: 23,
-      likes: 38,
-      date: "2 days ago"
-    },
-    {
-      id: 8,
-      category: "General",
-      isHelpful: false,
-      title: "Partner support during pregnancy",
-      content: "How did you help your partner understand what you're going through? Looking for ways to communicate better.",
-      user: "Anonymous",
-      replies: 16,
-      likes: 21,
-      date: "3 days ago"
-    }
-  ];
-
-  // 2. Filter Logic: Handles both the Category selection AND Search text
-  const filteredPosts = staticPosts.filter((post) => {
-    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.content.toLowerCase().includes(searchQuery.toLowerCase());
+  // Use the 'posts' prop instead of the hardcoded static list
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch = 
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesCategory = activeCategory === "All" || post.category === activeCategory;
     
@@ -185,8 +95,8 @@ const CommunityFeed = ({ onNavigate }) => {
                 
                 <div className="flex items-center gap-4 md:gap-6 pt-5 border-t border-gray-50 text-gray-400 text-[11px] md:text-sm font-medium">
                   <span className="font-bold text-slate-700">{post.user}</span>
-                  <div className="flex items-center gap-1.5"><MessageCircle size={16}/> {post.replies} replies</div>
-                  <div className="flex items-center gap-1.5"><Heart size={16}/> {post.likes}</div>
+                  <div className="flex items-center gap-1.5"><MessageCircle size={16}/> {post.replies || 0} replies</div>
+                  <div className="flex items-center gap-1.5"><Heart size={16}/> {post.likes || 0}</div>
                   <span className="ml-auto text-gray-300 text-[10px]">{post.date}</span>
                 </div>
               </div>
