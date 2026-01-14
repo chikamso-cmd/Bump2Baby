@@ -9,9 +9,9 @@ import CreatePost from './components/communityCreatePost';
 
 const MainRender = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  // Initialize view from URL or default to DASHBOARD
   const [view, setView] = useState(searchParams.get('view') || 'DASHBOARD');
   
-  // 1. ADDED: User state definition (This fixes your ReferenceError)
   const [user] = useState({
     name: 'Mary',
     isPregnancy: true,
@@ -19,7 +19,6 @@ const MainRender = () => {
     babyAgeMonths: 5
   });
 
-  // 2. Initial Community Posts State
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -34,28 +33,23 @@ const MainRender = () => {
     }
   ]);
 
-  // Sync view with URL search params
+  // Sync state with URL changes (Crucial for Landing Page navigation)
   useEffect(() => {
     const viewParam = searchParams.get('view');
-    if (viewParam && viewParam !== view) {
+    if (viewParam) {
       setView(viewParam);
     }
   }, [searchParams]);
 
-  // Navigation handler
   const handleNavigate = (newView) => {
     setView(newView);
     setSearchParams({ view: newView });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 3. CORRECTED: addNewPost function
   const addNewPost = (postData) => {
-    console.log("Data received from form:", postData);
-
     const newEntry = {
       id: Date.now(),
-      // Uses postData logic, or falls back to user state, or finally "Mary"
       user: postData.isAnonymous ? "Anonymous Member" : (user?.name || "Mary"),
       title: postData.title,
       category: postData.category,
@@ -66,26 +60,27 @@ const MainRender = () => {
       isHelpful: false
     };
 
-    // Update state to include the new post
     setPosts((prevPosts) => [newEntry, ...prevPosts]);
     
-    // Auto-navigate back to the feed after the success animation
     setTimeout(() => {
       handleNavigate('COMMUNITY_INTRO');
     }, 2000);
   };
+
+  // Helper to determine if we are in a known view
+  const isKnownView = ['DASHBOARD', 'COMMUNITY_INTRO', 'COMMUNITY_CREATE'].includes(view) || view.startsWith('SYMPTOM_');
 
   return (
     <div className="min-h-screen bg-[#F8FAFF]">
       <Header activeView={view} onNavigate={handleNavigate} />
       
       <main className="pb-12">
-        {/* Dashboard View */}
-        {view === 'DASHBOARD' && (
+        {/* 1. Dashboard View (Default) */}
+        {(view === 'DASHBOARD' || !isKnownView) && (
           <Dashboard user={user} onNavigate={handleNavigate} />
         )}
         
-        {/* Symptom Checker Flow */}
+        {/* 2. Symptom Checker Flow */}
         {view.startsWith('SYMPTOM_') && (
           <SymptomFlow 
             currentStep={view} 
@@ -94,7 +89,7 @@ const MainRender = () => {
           />
         )}
 
-        {/* Community Feed */}
+        {/* 3. Community Feed */}
         {view === 'COMMUNITY_INTRO' && (
           <CommunityFeed 
             posts={posts} 
@@ -102,7 +97,7 @@ const MainRender = () => {
           />
         )}
 
-        {/* Create Post Form */}
+        {/* 4. Create Post Form */}
         {view === 'COMMUNITY_CREATE' && (
           <CreatePost 
             onNavigate={handleNavigate} 
