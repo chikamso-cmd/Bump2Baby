@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login'; 
@@ -20,14 +21,14 @@ function App() {
         {/* Onboarding Flow */}
         <Route path="/home" element={<Home />} />
         
-        {/* Main Dashboard - We keep /app as the primary route */}
+        {/* Main Dashboard */}
         <Route path="/app" element={<MainRender />} />
         <Route path="/dashboard" element={<Navigate to="/app" replace />} />
         
         {/* Profile */}
         <Route path="/profile" element={<Profile />} />
         
-        {/* Community & Features from Main */}
+        {/* Community & Features */}
         <Route path="/community" element={<CommunityFeed />} />
         <Route path="/community/create" element={<CreatePost />} />
         <Route path="/hospital" element={<HospitalFinder />} />

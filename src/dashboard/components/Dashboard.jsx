@@ -2,7 +2,7 @@ import React from 'react';
 import { Heart, Stethoscope, MapPin, Users, Lightbulb, ChevronRight, MessageSquare, ThumbsUp } from 'lucide-react';
 
 const Dashboard = ({ user, onNavigate }) => {
-  // 1. Fail-safe: Pull data from Local Storage if props are missing
+  // 1. Fail-safe: Pull data from Local Storage if props are missing (Your logic)
   const storedData = JSON.parse(localStorage.getItem('bump2baby_user')) || {};
   
   // 2. Consolidate data: Priority to Props, then Storage, then Defaults
@@ -63,8 +63,8 @@ const Dashboard = ({ user, onNavigate }) => {
             <ActionCard 
               icon={<MapPin className="w-6 h-6 text-[#00AEEF]" />}
               title="Find Nearby Hospitals"
-              desc="Search local clinics"
-              onClick={() => {}}
+              desc="Discover maternal care nearby"
+              onClick={() => onNavigate("HOSPITAL_INTRO")} // Integrated colleague's route
               borderColor="border-blue-200"
               iconBg="bg-blue-50"
             />
@@ -80,7 +80,7 @@ const Dashboard = ({ user, onNavigate }) => {
               icon={<Lightbulb className="w-6 h-6 text-orange-400" />}
               title="Health Tips"
               desc="Expert advice and guidance"
-              onClick={() => {}}
+              onClick={() => onNavigate("HEALTH_TIPS")} // Integrated colleague's route
               borderColor="border-orange-100"
               iconBg="bg-orange-50"
             />
@@ -169,13 +169,25 @@ const CommunityPost = ({ author, avatar, time, text, isTrending }) => (
   <div className="p-4 bg-gray-50 rounded-2xl space-y-2">
     <div className="flex items-center gap-3">
       <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">{avatar}</div>
-      <div className="flex-1 flex items-center gap-2">
-        <span className="text-sm font-bold text-gray-800">{author}</span>
-        <span className="text-[10px] text-gray-400">{time}</span>
-        {isTrending && <span className="text-[10px] text-orange-500 font-bold ml-auto">🔥 Trending</span>}
+      <div className="flex-1">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-bold text-gray-800">{author}</span>
+          <span className="text-[10px] text-gray-400">{time}</span>
+          {isTrending && <span className="text-[10px] text-orange-500 font-bold ml-auto">🔥 Trending</span>}
+        </div>
       </div>
     </div>
     <p className="text-xs text-gray-600 leading-relaxed">{text}</p>
+    <div className="flex items-center gap-4 text-gray-400">
+      <div className="flex items-center gap-1">
+        <MessageSquare className="w-3.5 h-3.5" />
+        <span className="text-[10px] font-bold">24</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <ThumbsUp className="w-3.5 h-3.5" />
+        <span className="text-[10px] font-bold">45</span>
+      </div>
+    </div>
   </div>
 );
 

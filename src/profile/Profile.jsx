@@ -1,48 +1,56 @@
-
-import React, { useState, useCallback } from 'react';
-import Header from './components/Header';
-import ProfileMain from './components/ProfileMain';
-import EditProfile from './components/EditProfile';
-import Preferences from './components/Preference';
-import AccountActions from './components/AccountsAction';
-import Toast from './components/Toast';
-import BottomNav from '../components/BottomNav';
+import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "./components/Header";
+import ProfileMain from "./components/ProfileMain";
+import EditProfile from "./components/EditProfile";
+import Preferences from "./components/Preference";
+import AccountActions from "./components/AccountsAction";
+import Toast from "./components/Toast";
+import BottomNav from "../components/BottomNav";
 // import { Page } from '../types';
 
 const Profile = () => {
-  const [currentPage, setCurrentPage] = useState('profile');
+  const [currentPage, setCurrentPage] = useState("profile");
   const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();
   const [user, setUser] = useState({
-    name: 'Sarah Martinez',
-    email: 'sarah.martinez@email.com',
+    name: "Sarah Martinez",
+    email: "sarah.martinez@email.com",
     status: {
-      type: 'Pregnant',
-      stage: 'Trimester 2, Week 18',
-      isActive: true
-    }
+      type: "Pregnant",
+      stage: "Trimester 2, Week 18",
+      isActive: true,
+    },
   });
 
   const [notifications, setNotifications] = useState({
     healthTips: true,
     communityUpdates: false,
-    reminders: true
+    reminders: true,
   });
 
-  const handleNavigate = useCallback((page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  const handleNavigate = useCallback(
+    (page) => {
+      if (page === "dashboard") {
+        navigate("/dashboard");
+      } else {
+        setCurrentPage(page);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [navigate]
+  );
 
   const handleSaveProfile = useCallback((newData) => {
-    setUser(prev => ({ ...prev, ...newData }));
-    setCurrentPage('profile');
+    setUser((prev) => ({ ...prev, ...newData }));
+    setCurrentPage("profile");
     setShowToast(true);
   }, []);
 
   const handleUpdatePreference = useCallback((key) => {
-    setNotifications(prev => ({
+    setNotifications((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }));
   }, []);
 
@@ -52,29 +60,29 @@ const Profile = () => {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'profile':
+      case "profile":
         return <ProfileMain user={user} onNavigate={handleNavigate} />;
-      case 'edit-profile':
+      case "edit-profile":
         return (
-          <EditProfile 
-            user={user} 
-            onBack={() => setCurrentPage('profile')} 
-            onSave={handleSaveProfile} 
+          <EditProfile
+            user={user}
+            onBack={() => setCurrentPage("profile")}
+            onSave={handleSaveProfile}
           />
         );
-      case 'preferences':
+      case "preferences":
         return (
-          <Preferences 
-            settings={notifications} 
-            onBack={() => setCurrentPage('profile')} 
-            onUpdate={handleUpdatePreference} 
+          <Preferences
+            settings={notifications}
+            onBack={() => setCurrentPage("profile")}
+            onUpdate={handleUpdatePreference}
           />
         );
-      case 'account-actions':
+      case "account-actions":
         return (
-          <AccountActions 
-            onBack={() => setCurrentPage('profile')} 
-            onLogout={handleLogout} 
+          <AccountActions
+            onBack={() => setCurrentPage("profile")}
+            onLogout={handleLogout}
           />
         );
       default:
@@ -90,10 +98,10 @@ const Profile = () => {
       </main>
 
       {showToast && (
-        <Toast 
-          message="Profile updated successfully!" 
-          description="Your changes have been saved." 
-          onClose={() => setShowToast(false)} 
+        <Toast
+          message="Profile updated successfully!"
+          description="Your changes have been saved."
+          onClose={() => setShowToast(false)}
         />
       )}
 

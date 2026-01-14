@@ -31,7 +31,7 @@ const LandingPage = () => {
         {/* 2. Pass navigation to Hero (Get Started button) */}
         <Hero onNavigate={() => handleNavigate('DASHBOARD')} />
         
-        {/* 3. Pass navigation to Features (The cards we just updated) */}
+        {/* 3. Pass navigation to Features (The cards) */}
         <Features onNavigate={handleNavigate} />
         
         <Testimonials />
