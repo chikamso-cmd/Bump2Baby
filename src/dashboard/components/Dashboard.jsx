@@ -84,7 +84,7 @@ const Dashboard = ({ user, onNavigate }) => {
               icon={<Users className="w-6 h-6 text-indigo-500" />}
               title="Community"
               desc="Connect with others"
-              onClick={() => {}}
+              onClick={() => onNavigate("COMMUNITY_INTRO")}
               borderColor="border-indigo-100"
               iconBg="bg-indigo-50"
             />
