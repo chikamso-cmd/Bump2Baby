@@ -5,7 +5,7 @@ import LandingPage from './landingpage/LandingPAge'
 import Profile from './profile/Profile'
 import CommunityFeed from './dashboard/components/communityFeed';
 import CreatePost from './dashboard/components/communityCreatePost';
-
+import HospitalFinder from './hospital/HospitalFinder';
 function App() {
   
 
@@ -19,6 +19,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/community" element={<CommunityFeed />} />
         <Route path="/community/create" element={<CreatePost />} />
+        <Route path="/hospital" element={<HospitalFinder />} />
         </Routes>
       </BrowserRouter>
     </>

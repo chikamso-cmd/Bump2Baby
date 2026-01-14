@@ -1,6 +1,14 @@
-
-import React from 'react';
-import { Heart, Stethoscope, MapPin, Users, Lightbulb, ChevronRight, MessageSquare, ThumbsUp } from 'lucide-react';
+import React from "react";
+import {
+  Heart,
+  Stethoscope,
+  MapPin,
+  Users,
+  Lightbulb,
+  ChevronRight,
+  MessageSquare,
+  ThumbsUp,
+} from "lucide-react";
 // import { UserState } from '../types';
 
 // interface DashboardProps {
@@ -11,60 +19,68 @@ import { Heart, Stethoscope, MapPin, Users, Lightbulb, ChevronRight, MessageSqua
 const Dashboard = ({ user, onNavigate }) => {
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
       {/* Left Column: Progress & Actions */}
       <div className="lg:col-span-8 space-y-6">
-        
         {/* Progress Card */}
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden group">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Hi {user.name} 👋</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                Hi {user.name} 👋
+              </h1>
               <p className="text-gray-500 font-medium">
-                {user.isPregnancy ? `First Trimester • Week ${user.pregnancyWeek}` : `${user.babyAgeMonths} months old`}
+                {user.isPregnancy
+                  ? `First Trimester • Week ${user.pregnancyWeek}`
+                  : `${user.babyAgeMonths} months old`}
               </p>
             </div>
             <div className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center">
               <Heart className="w-6 h-6 text-[#D63D6C] fill-[#D63D6C]" />
             </div>
           </div>
-          
+
           <div className="mt-8 space-y-2">
             <div className="flex justify-between text-sm font-semibold text-gray-700">
-              <span>{user.isPregnancy ? 'Pregnancy progress' : 'Growth Journey'}</span>
+              <span>
+                {user.isPregnancy ? "Pregnancy progress" : "Growth Journey"}
+              </span>
               <span>33%</span>
             </div>
             <div className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-[#D63D6C] rounded-full transition-all duration-1000" 
-                style={{ width: '33%' }}
+              <div
+                className="h-full bg-[#D63D6C] rounded-full transition-all duration-1000"
+                style={{ width: "33%" }}
               ></div>
             </div>
           </div>
-          <p className="mt-4 text-sm text-gray-400 font-medium">Keep tracking your journey!</p>
+          <p className="mt-4 text-sm text-gray-400 font-medium">
+            Keep tracking your journey!
+          </p>
         </div>
 
         {/* Quick Actions */}
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Quick actions</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
+            Quick actions
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <ActionCard 
+            <ActionCard
               icon={<Stethoscope className="w-6 h-6 text-[#D63D6C]" />}
               title="Symptom Checker"
               desc="Quick health assessment"
-              onClick={() => onNavigate('SYMPTOM_INTRO')}
+              onClick={() => onNavigate("SYMPTOM_INTRO")}
               borderColor="border-pink-200"
               iconBg="bg-pink-50"
             />
-            <ActionCard 
+            <ActionCard
               icon={<MapPin className="w-6 h-6 text-[#00AEEF]" />}
               title="Find Nearby Hospitals"
-              desc="Quick health assessment"
-              onClick={() => {}}
+              desc="Discover maternal care nearby"
+              onClick={() => onNavigate("HOSPITAL_INTRO")}
               borderColor="border-blue-200"
               iconBg="bg-blue-50"
             />
-            <ActionCard 
+            <ActionCard
               icon={<Users className="w-6 h-6 text-indigo-500" />}
               title="Community"
               desc="Connect with others"
@@ -72,7 +88,7 @@ const Dashboard = ({ user, onNavigate }) => {
               borderColor="border-indigo-100"
               iconBg="bg-indigo-50"
             />
-            <ActionCard 
+            <ActionCard
               icon={<Lightbulb className="w-6 h-6 text-orange-400" />}
               title="Health Tips"
               desc="Expert advice and guidance"
@@ -91,9 +107,12 @@ const Dashboard = ({ user, onNavigate }) => {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-2">😔 Today's Insight</h3>
-              <p className="font-semibold text-lg opacity-90 mb-4">Rest and Relax</p>
+              <p className="font-semibold text-lg opacity-90 mb-4">
+                Rest and Relax
+              </p>
               <p className="text-sm opacity-80 leading-relaxed max-w-lg">
-                Take time to rest when you feel tired. Your body is working hard to nurture your growing baby.
+                Take time to rest when you feel tired. Your body is working hard
+                to nurture your growing baby.
               </p>
             </div>
           </div>
@@ -114,18 +133,18 @@ const Dashboard = ({ user, onNavigate }) => {
             </button>
           </div>
           <div className="space-y-4">
-            <UpcomingItem 
+            <UpcomingItem
               title="Prenatal Checkup"
               date="Thursday January 15, 2026"
               dotColor="bg-gray-300"
             />
-            <UpcomingItem 
+            <UpcomingItem
               title="Ultrasound Scan"
               date="Thursday January 22, 2026"
               dotColor="bg-[#D63D6C]"
               active
             />
-            <UpcomingItem 
+            <UpcomingItem
               title="Take Prenatal Vitamin"
               date="Daily"
               dotColor="bg-gray-300"
@@ -137,29 +156,31 @@ const Dashboard = ({ user, onNavigate }) => {
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold text-gray-900">Community</h3>
-            <span className="px-2 py-0.5 bg-gray-100 text-gray-400 text-[10px] font-bold rounded uppercase">Live</span>
+            <span className="px-2 py-0.5 bg-gray-100 text-gray-400 text-[10px] font-bold rounded uppercase">
+              Live
+            </span>
           </div>
           <div className="space-y-4">
-            <CommunityPost 
+            <CommunityPost
               author="Titilayo M."
               avatar="TM"
               time="2h ago"
               text="Any tips for dealing with morning sickness? Week 8 here and struggling..."
               isTrending
             />
-            <CommunityPost 
+            <CommunityPost
               author="Amanda K."
               avatar="AK"
               time="5h ago"
               text="Best baby monitors? Looking for recommendations"
             />
           </div>
-<button 
-  onClick={() => onNavigate('COMMUNITY_INTRO')}
-  className="w-full mt-6 bg-[#D63D6C] text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#c2335f] transition-colors"
->
-  Join the conversation <ChevronRight className="w-4 h-4" />
-</button>
+          <button
+            onClick={() => onNavigate("COMMUNITY_INTRO")}
+            className="w-full mt-6 bg-[#D63D6C] text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#c2335f] transition-colors"
+          >
+            Join the conversation <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </div>
@@ -167,11 +188,13 @@ const Dashboard = ({ user, onNavigate }) => {
 };
 
 const ActionCard = ({ icon, title, desc, onClick, borderColor, iconBg }) => (
-  <button 
+  <button
     onClick={onClick}
     className={`flex items-start gap-4 p-4 bg-white border ${borderColor} rounded-2xl text-left hover:shadow-md transition-shadow group`}
   >
-    <div className={`p-3 ${iconBg} rounded-xl group-hover:scale-110 transition-transform`}>
+    <div
+      className={`p-3 ${iconBg} rounded-xl group-hover:scale-110 transition-transform`}
+    >
       {icon}
     </div>
     <div>
@@ -182,7 +205,11 @@ const ActionCard = ({ icon, title, desc, onClick, borderColor, iconBg }) => (
 );
 
 const UpcomingItem = ({ title, date, dotColor, active }) => (
-  <div className={`p-4 border ${active ? 'border-pink-200' : 'border-gray-100'} rounded-2xl flex items-center gap-4`}>
+  <div
+    className={`p-4 border ${
+      active ? "border-pink-200" : "border-gray-100"
+    } rounded-2xl flex items-center gap-4`}
+  >
     <div className={`w-2 h-2 rounded-full ${dotColor}`}></div>
     <div>
       <h4 className="text-sm font-bold text-gray-800">{title}</h4>
@@ -201,7 +228,11 @@ const CommunityPost = ({ author, avatar, time, text, isTrending }) => (
         <div className="flex items-center gap-1">
           <span className="text-sm font-bold text-gray-800">{author}</span>
           <span className="text-[10px] text-gray-400 font-medium">{time}</span>
-          {isTrending && <span className="text-[10px] text-orange-500 font-bold ml-auto">🔥 Trending</span>}
+          {isTrending && (
+            <span className="text-[10px] text-orange-500 font-bold ml-auto">
+              🔥 Trending
+            </span>
+          )}
         </div>
       </div>
     </div>

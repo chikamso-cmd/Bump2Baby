@@ -8,7 +8,7 @@ const Header = () => {
     <header className="bg-white border-b border-slate-100 py-4 px-6 md:px-12 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link to="/dashboard">
+          <Link to="/">
             <img src={logo} className="w-50" alt="Logo" />
           </Link>
         </div>
@@ -16,7 +16,7 @@ const Header = () => {
         <nav className="hidden md:flex items-center gap-8">
           <Link to="/dashboard" className="text-[#334155] font-semibold hover:text-[#D9437E]">Home</Link>
           <Link to="/dashboard?view=SYMPTOM_INTRO" className="text-[#334155] font-semibold hover:text-[#D9437E]">Symptom checker</Link>
-          <Link to="/dashboard?view=HOSPITAL_INTRO" className="text-[#334155] font-semibold hover:text-[#D9437E]">Find Hospital</Link>
+          <Link to="/hospital" className="text-[#334155] font-semibold hover:text-[#D9437E]">Find Hospital</Link>
           <Link to="/dashboard?view=COMMUNITY_INTRO" className="text-[#334155] font-semibold hover:text-[#D9437E]">Community</Link>
         </nav>
 

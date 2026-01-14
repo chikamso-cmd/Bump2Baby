@@ -1,22 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import Header from './components/DashboardHeader';
-import Dashboard from './components/Dashboard';
-import SymptomFlow from './components/SymptomFlow';
-import BottomNav from '../components/BottomNav';
-import CommunityFeed from './components/communityFeed';
-import CreatePost from './components/communityCreatePost';
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import Header from "./components/DashboardHeader";
+import Dashboard from "./components/Dashboard";
+import SymptomFlow from "./components/SymptomFlow";
+import BottomNav from "../components/BottomNav";
+import CommunityFeed from "./components/communityFeed";
+import CreatePost from "./components/communityCreatePost";
+import HospitalFinder from "../hospital/HospitalFinder";
 
 const MainRender = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [view, setView] = useState(searchParams.get('view') || 'DASHBOARD');
-  
-  // 1. ADDED: User state definition (This fixes your ReferenceError)
+  const [view, setView] = useState(searchParams.get("view") || "DASHBOARD");
+
+  // 1. User state definition
   const [user] = useState({
-    name: 'Mary',
+    name: "Mary",
     isPregnancy: true,
     pregnancyWeek: 8,
-    babyAgeMonths: 5
+    babyAgeMonths: 5,
   });
 
   // 2. Initial Community Posts State
@@ -25,18 +26,19 @@ const MainRender = () => {
       id: 1,
       user: "Amanda k.",
       title: "Prenatal yoga recommendations",
-      content: "Has anyone tried prenatal yoga? Did it help the back pain and stress? Any YouTube channels or apps you recommend?",
+      content:
+        "Has anyone tried prenatal yoga? Did it help the back pain and stress? Any YouTube channels or apps you recommend?",
       replies: 19,
       likes: 28,
       category: "Health & Wellness",
       date: "2 days ago",
-      isHelpful: false
-    }
+      isHelpful: false,
+    },
   ]);
 
   // Sync view with URL search params
   useEffect(() => {
-    const viewParam = searchParams.get('view');
+    const viewParam = searchParams.get("view");
     if (viewParam && viewParam !== view) {
       setView(viewParam);
     }
@@ -46,72 +48,67 @@ const MainRender = () => {
   const handleNavigate = (newView) => {
     setView(newView);
     setSearchParams({ view: newView });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // 3. CORRECTED: addNewPost function
+  // 3. addNewPost function
   const addNewPost = (postData) => {
     console.log("Data received from form:", postData);
 
     const newEntry = {
       id: Date.now(),
-      // Uses postData logic, or falls back to user state, or finally "Mary"
-      user: postData.isAnonymous ? "Anonymous Member" : (user?.name || "Mary"),
+      user: postData.isAnonymous ? "Anonymous Member" : user?.name || "Mary",
       title: postData.title,
       category: postData.category,
       content: postData.content,
       replies: 0,
       likes: 0,
       date: "Just now",
-      isHelpful: false
+      isHelpful: false,
     };
 
-    // Update state to include the new post
     setPosts((prevPosts) => [newEntry, ...prevPosts]);
-    
-    // Auto-navigate back to the feed after the success animation
+
     setTimeout(() => {
-      handleNavigate('COMMUNITY_INTRO');
+      handleNavigate("COMMUNITY_INTRO");
     }, 2000);
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAFF]">
       <Header activeView={view} onNavigate={handleNavigate} />
-      
+
       <main className="pb-12">
         {/* Dashboard View */}
-        {view === 'DASHBOARD' && (
+        {view === "DASHBOARD" && (
           <Dashboard user={user} onNavigate={handleNavigate} />
         )}
-        
+
         {/* Symptom Checker Flow */}
-        {view.startsWith('SYMPTOM_') && (
-          <SymptomFlow 
-            currentStep={view} 
-            setCurrentStep={setView} 
-            onBack={() => setView('DASHBOARD')} 
+        {view.startsWith("SYMPTOM_") && (
+          <SymptomFlow
+            currentStep={view}
+            setCurrentStep={setView}
+            onBack={() => setView("DASHBOARD")}
           />
         )}
 
         {/* Community Feed */}
-        {view === 'COMMUNITY_INTRO' && (
-          <CommunityFeed 
-            posts={posts} 
-            onNavigate={handleNavigate} 
-          />
+        {view === "COMMUNITY_INTRO" && (
+          <CommunityFeed posts={posts} onNavigate={handleNavigate} />
         )}
 
         {/* Create Post Form */}
-        {view === 'COMMUNITY_CREATE' && (
-          <CreatePost 
-            onNavigate={handleNavigate} 
-            onAddPost={addNewPost} 
-          />
+        {view === "COMMUNITY_CREATE" && (
+          <CreatePost onNavigate={handleNavigate} onAddPost={addNewPost} />
         )}
+
+        {/* Hospital Finder */}
+        {view === "HOSPITAL_INTRO" && <HospitalFinder />}
       </main>
-      
+
       <BottomNav activeView={view} onNavigate={handleNavigate} />
+      
     </div>
   );
 };
