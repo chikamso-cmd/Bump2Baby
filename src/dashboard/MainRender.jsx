@@ -9,31 +9,61 @@ import CreatePost from './components/communityCreatePost';
 
 const MainRender = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  // Initialize view from URL or default to DASHBOARD
   const [view, setView] = useState(searchParams.get('view') || 'DASHBOARD');
   
-  const [user] = useState({
-    name: 'Mary',
-    isPregnancy: true,
-    pregnancyWeek: 8,
-    babyAgeMonths: 5
+  // 1. UPDATED: Initialize user from localStorage
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('bump2baby_user');
+    if (savedUser) {
+      try {
+        return JSON.parse(savedUser);
+      } catch (e) {
+        console.error("Error parsing saved user:", e);
+      }
+    }
+    // Fallback default if no one has signed up yet
+    return {
+      name: 'Mary',
+      isPregnancy: true,
+      pregnancyWeek: 8,
+      babyAgeMonths: 5
+    };
   });
 
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      user: "Amanda k.",
-      title: "Prenatal yoga recommendations",
-      content: "Has anyone tried prenatal yoga? Did it help the back pain and stress? Any YouTube channels or apps you recommend?",
-      replies: 19,
-      likes: 28,
-      category: "Health & Wellness",
-      date: "2 days ago",
-      isHelpful: false
+  const [posts, setPosts] = useState(() => {
+    const savedPosts = localStorage.getItem('bump2baby_posts');
+    if (savedPosts) {
+      try {
+        return JSON.parse(savedPosts);
+      } catch (e) {
+        console.error("Error parsing saved posts:", e);
+      }
     }
-  ]);
+    return [
+      {
+        id: 1,
+        user: "Amanda k.",
+        title: "Prenatal yoga recommendations",
+        content: "Has anyone tried prenatal yoga? Did it help the back pain and stress?",
+        replies: 19,
+        likes: 28,
+        category: "Health & Wellness",
+        date: "2 days ago",
+        isHelpful: false
+      }
+    ];
+  });
 
-  // Sync state with URL changes (Crucial for Landing Page navigation)
+  // 2. Sync User and Posts to localStorage
+  useEffect(() => {
+    localStorage.setItem('bump2baby_posts', JSON.stringify(posts));
+  }, [posts]);
+
+  // Added effect to keep user data in sync if updated
+  useEffect(() => {
+    localStorage.setItem('bump2baby_user', JSON.stringify(user));
+  }, [user]);
+
   useEffect(() => {
     const viewParam = searchParams.get('view');
     if (viewParam) {
@@ -50,6 +80,7 @@ const MainRender = () => {
   const addNewPost = (postData) => {
     const newEntry = {
       id: Date.now(),
+      // Use the dynamic user name here!
       user: postData.isAnonymous ? "Anonymous Member" : (user?.name || "Mary"),
       title: postData.title,
       category: postData.category,
@@ -67,7 +98,6 @@ const MainRender = () => {
     }, 2000);
   };
 
-  // Helper to determine if we are in a known view
   const isKnownView = ['DASHBOARD', 'COMMUNITY_INTRO', 'COMMUNITY_CREATE'].includes(view) || view.startsWith('SYMPTOM_');
 
   return (
@@ -75,12 +105,10 @@ const MainRender = () => {
       <Header activeView={view} onNavigate={handleNavigate} />
       
       <main className="pb-12">
-        {/* 1. Dashboard View (Default) */}
         {(view === 'DASHBOARD' || !isKnownView) && (
           <Dashboard user={user} onNavigate={handleNavigate} />
         )}
         
-        {/* 2. Symptom Checker Flow */}
         {view.startsWith('SYMPTOM_') && (
           <SymptomFlow 
             currentStep={view} 
@@ -89,7 +117,6 @@ const MainRender = () => {
           />
         )}
 
-        {/* 3. Community Feed */}
         {view === 'COMMUNITY_INTRO' && (
           <CommunityFeed 
             posts={posts} 
@@ -97,7 +124,6 @@ const MainRender = () => {
           />
         )}
 
-        {/* 4. Create Post Form */}
         {view === 'COMMUNITY_CREATE' && (
           <CreatePost 
             onNavigate={handleNavigate} 
