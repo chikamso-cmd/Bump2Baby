@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login'; 
@@ -9,26 +8,26 @@ import Profile from './profile/Profile';
 import CommunityFeed from './dashboard/components/communityFeed';
 import CreatePost from './dashboard/components/communityCreatePost';
 import HospitalFinder from './hospital/HospitalFinder';
+import AboutUs from './landingpage/AboutUs';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Landing & Auth */}
+        {/* Landing & Static Pages */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<AboutUs />} />
         
-        {/* Onboarding Flow */}
+        {/* Auth & Onboarding */}
+        <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         
-        {/* Main Dashboard */}
+        {/* Main Application */}
         <Route path="/app" element={<MainRender />} />
         <Route path="/dashboard" element={<Navigate to="/app" replace />} />
-        
-        {/* Profile */}
         <Route path="/profile" element={<Profile />} />
         
-        {/* Community & Features */}
+        {/* Features */}
         <Route path="/community" element={<CommunityFeed />} />
         <Route path="/community/create" element={<CreatePost />} />
         <Route path="/hospital" element={<HospitalFinder />} />

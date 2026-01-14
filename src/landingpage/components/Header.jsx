@@ -62,12 +62,12 @@ const Header = () => {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#"
+            <button
+              onClick={() => navigate("/")}
               className="text-gray-700 hover:text-[#e83e8c] font-medium transition-colors"
             >
               Home
-            </a>
+            </button>
 
             {/* Features Dropdown */}
             <div className="relative group">
@@ -105,12 +105,12 @@ const Header = () => {
               </div>
             </div>
 
-            <a
-              href="#"
+            <button
+              onClick={() => navigate("/about")}
               className="text-gray-700 hover:text-[#e83e8c] font-medium transition-colors"
             >
               About us
-            </a>
+            </button>
           </nav>
 
           {/* CTA Button */}
@@ -139,12 +139,15 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-100 animate-in slide-in-from-top duration-300 max-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="px-4 pt-2 pb-6 space-y-1 sm:px-3">
-            <a
-              href="#"
-              className="block px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
+            <button
+              onClick={() => {
+                navigate("/");
+                setIsMenuOpen(false);
+              }}
+              className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
             >
               Home
-            </a>
+            </button>
 
             {/* Mobile Features Dropdown */}
             <div className="border-b border-gray-50">
@@ -187,12 +190,15 @@ const Header = () => {
               )}
             </div>
 
-            <a
-              href="#"
-              className="block px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
+            <button
+              onClick={() => {
+                navigate("/about");
+                setIsMenuOpen(false);
+              }}
+              className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
             >
               About us
-            </a>
+            </button>
 
             <div className="pt-4 px-3">
               <button
