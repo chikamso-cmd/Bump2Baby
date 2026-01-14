@@ -1,26 +1,67 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import HospitalCard from "./components/HospitalCard";
 import MapSection from "./components/MapSection";
 import FilterPopover from "./components/FilterPopover";
 import HospitalDetails from "./components/HospitalDetails";
-import { MOCK_HOSPITALS, Icons } from "../Constant";
+import { Icons } from "../Constant";
+import { useGeolocation } from "../hooks/useGeolocation";
+import {
+  fetchHospitals,
+  getDefaultLocation,
+} from "../services/hospitalService";
 
 const HospitalFinder = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState(null);
+  const [hospitals, setHospitals] = useState([]);
+  const [isLoadingHospitals, setIsLoadingHospitals] = useState(false);
+  const [apiError, setApiError] = useState(null);
+
+  const {
+    location,
+    loading: loadingLocation,
+    error: locationError,
+  } = useGeolocation();
+
   const [filters, setFilters] = useState({
     maxDistance: 20,
     minRating: 0,
     hospitalType: "All",
   });
 
+  // Fetch hospitals when location is available
+  useEffect(() => {
+    const loadHospitals = async () => {
+      const coords = location || getDefaultLocation();
+      setIsLoadingHospitals(true);
+      setApiError(null);
+
+      try {
+        const data = await fetchHospitals(coords.latitude, coords.longitude);
+        setHospitals(data);
+      } catch (err) {
+        setApiError(
+          "Failed to fetch nearby hospitals. Please try again later."
+        );
+        console.error(err);
+      } finally {
+        setIsLoadingHospitals(false);
+      }
+    };
+
+    if (!loadingLocation) {
+      loadHospitals();
+    }
+  }, [location, loadingLocation]);
+
   const filteredHospitals = useMemo(() => {
-    return MOCK_HOSPITALS.filter((h) => {
+    return hospitals.filter((h) => {
       const matchesSearch =
         h.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         h.address.toLowerCase().includes(searchQuery.toLowerCase());
-      const distanceValue = parseFloat(h.distance.split(" ")[0]);
+
+      const distanceValue = h.distanceValue || 0;
       const matchesDistance = distanceValue <= filters.maxDistance;
       const matchesRating = h.rating >= filters.minRating;
       const matchesType =
@@ -28,7 +69,7 @@ const HospitalFinder = () => {
 
       return matchesSearch && matchesDistance && matchesRating && matchesType;
     });
-  }, [searchQuery, filters]);
+  }, [hospitals, searchQuery, filters]);
 
   const resetFilters = () => {
     setFilters({
@@ -62,6 +103,21 @@ const HospitalFinder = () => {
                 Discover maternal and child health facilities near you
               </p>
             </div>
+
+            {/* Error Messages */}
+            {(locationError || apiError) && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-700 text-sm">
+                <div className="p-1.5 bg-red-100 rounded-full">
+                  <Icons.Search className="w-4 h-4 text-red-600" />
+                </div>
+                <p>{locationError || apiError}</p>
+                {locationError && (
+                  <span className="text-xs text-red-400 ml-auto">
+                    Using default location (San Francisco)
+                  </span>
+                )}
+              </div>
+            )}
 
             {/* Search & Filter Bar */}
             <div className="flex flex-col md:flex-row gap-4 mb-8 relative">
@@ -103,10 +159,24 @@ const HospitalFinder = () => {
             </div>
 
             {/* Map Visualization */}
-            <MapSection />
+            <MapSection
+              hospitals={filteredHospitals}
+              userLocation={location || getDefaultLocation()}
+              onHospitalClick={handleViewDetails}
+              loading={isLoadingHospitals || loadingLocation}
+            />
 
             {/* Results Section */}
-            {filteredHospitals.length > 0 ? (
+            {isLoadingHospitals ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="h-48 bg-gray-50 animate-pulse rounded-2xl border border-gray-100"
+                  ></div>
+                ))}
+              </div>
+            ) : filteredHospitals.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
                   {filteredHospitals.map((hospital) => (
@@ -119,9 +189,9 @@ const HospitalFinder = () => {
                 </div>
 
                 <div className="flex flex-col items-center space-y-6">
-                  <button className="text-[#3B82F6] font-bold text-sm hover:underline decoration-2 underline-offset-4">
-                    Show All {MOCK_HOSPITALS.length} Hospitals
-                  </button>
+                  <p className="text-gray-500 text-sm">
+                    Showing {filteredHospitals.length} facilities near you
+                  </p>
                 </div>
               </>
             ) : (

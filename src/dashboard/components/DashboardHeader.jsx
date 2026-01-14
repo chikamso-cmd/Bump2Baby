@@ -53,6 +53,16 @@ const Header = ({ onNavigate, activeView }) => {
         >
           Community
         </button>
+        <button
+          onClick={() => onNavigate?.("HEALTH_TIPS")}
+          className={`font-semibold ${
+            activeView === "HEALTH_TIPS"
+              ? "text-[#D9437E]"
+              : "text-[#334155] hover:text-[#D9437E]"
+          }`}
+        >
+          Health Tips
+        </button>
       </nav>
 
       <div className="flex items-center gap-4">

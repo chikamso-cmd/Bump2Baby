@@ -7,6 +7,7 @@ import BottomNav from "../components/BottomNav";
 import CommunityFeed from "./components/communityFeed";
 import CreatePost from "./components/communityCreatePost";
 import HospitalFinder from "../hospital/HospitalFinder";
+import HealthTips from "./components/HealthTips";
 
 const MainRender = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -105,10 +106,14 @@ const MainRender = () => {
 
         {/* Hospital Finder */}
         {view === "HOSPITAL_INTRO" && <HospitalFinder />}
+
+        {/* Health Tips */}
+        {view === "HEALTH_TIPS" && (
+          <HealthTips onBack={() => setView("DASHBOARD")} />
+        )}
       </main>
 
       <BottomNav activeView={view} onNavigate={handleNavigate} />
-      
     </div>
   );
 };

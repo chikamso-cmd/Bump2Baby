@@ -92,7 +92,7 @@ const Dashboard = ({ user, onNavigate }) => {
               icon={<Lightbulb className="w-6 h-6 text-orange-400" />}
               title="Health Tips"
               desc="Expert advice and guidance"
-              onClick={() => {}}
+              onClick={() => onNavigate("HEALTH_TIPS")}
               borderColor="border-orange-100"
               iconBg="bg-orange-50"
             />
