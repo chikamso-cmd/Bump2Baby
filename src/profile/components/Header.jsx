@@ -1,9 +1,14 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/Logo.png';
 
-const Header = () => {
+// Receive 'user' as a prop from the parent (Profile.jsx or MainRender)
+const Header = ({ user }) => {
+  // Generate initials fallback if user object exists but no photo
+  const initials = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("")
+    : "U";
+
   return (
     <header className="bg-white border-b border-slate-100 py-4 px-6 md:px-12 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -27,11 +32,20 @@ const Header = () => {
             </svg>
             <span className="absolute top-2 right-2 w-2 h-2 bg-[#D9437E] rounded-full"></span>
           </button>
-          <div className="w-9 h-9 bg-[#D9437E] rounded-full flex items-center justify-center text-white">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
+          
+          {/* Updated Avatar Section */}
+          <Link to="/profile" className="w-9 h-9 bg-[#D9437E] rounded-full flex items-center justify-center text-white overflow-hidden border border-slate-100 shadow-sm transition-transform hover:scale-105">
+            {user?.profilePic ? (
+              <img 
+                src={user.profilePic} 
+                alt="User Profile" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              /* Fallback to User Icon or Initials if no picture exists */
+              <span className="text-xs font-bold uppercase">{initials}</span>
+            )}
+          </Link>
         </div>
       </div>
     </header>

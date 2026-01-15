@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+import { Eye, EyeOff } from "lucide-react"; // Import Eye icons
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // New state for visibility
   const [error, setError] = useState('');
 
- const handleLogin = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setError('');
 
@@ -22,7 +24,6 @@ const Login = () => {
 
     const storedUser = JSON.parse(storedData);
 
-    // Compare everything in lowercase to avoid typos
     if (storedUser.username?.toLowerCase() === username.toLowerCase()) {
       localStorage.setItem('bump2baby_onboarded', 'true');
       navigate('/app');
@@ -78,14 +79,25 @@ const Login = () => {
 
           <div>
             <label className="block text-slate-500 text-xs font-medium mb-2 ml-1">Password</label>
-            <input 
-              type="password" 
-              placeholder="At least 8 characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-3.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-100 focus:border-[#D83D6C] transition-all placeholder:text-slate-300"
-              required
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="At least 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-5 py-3.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-100 focus:border-[#D83D6C] transition-all placeholder:text-slate-300 pr-12"
+                required
+              />
+              {/* Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            
             <div className="text-right mt-2">
               <button type="button" className="text-[10px] font-semibold text-slate-400 hover:text-[#D83D6C]">Forgot Password</button>
             </div>
@@ -119,7 +131,6 @@ const Login = () => {
           </button>
         </div>
 
-        {/* ADDED: Sign Up Link */}
         <div className="mt-10 text-center">
           <p className="text-sm text-slate-500">
             Don't have an account?{' '}

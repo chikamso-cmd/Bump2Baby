@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaHeart } from 'react-icons/fa'; // Added useEffect
-
+import { FaHeart } from 'react-icons/fa'; 
+import { Eye, EyeOff } from 'lucide-react';
 
 export const StepCard = ({ children }) => (
   <div className="bg-white rounded-[40px] shadow-sm p-8 md:p-12 w-full max-w-lg mx-auto flex flex-col items-center transition-all animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -102,15 +102,17 @@ export const BabyAgeStep = ({ selected, onSelect, onNext }) => {
   );
 };
 
-// 4. Account Step - UPDATED: Email replaced with Username
+// 4. Account Step - FIXED: Added missing states and fixed Email logic
 export const AccountStep = ({ onNext, setUserName, setHandle }) => {
   const [nameInput, setNameInput] = useState('');
-  const [usernameInput, setUsernameInput] = useState('');
+  const [emailInput, setEmailInput] = useState(''); // renamed from usernameInput
+  const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setUserName(nameInput); // Passes "Mary Jane" to Home.jsx
-    if (setHandle) setHandle(usernameInput); // Passes "mary_j" to Home.jsx
+    setUserName(nameInput);
+    if (setHandle) setHandle(emailInput); // This sets the handle/email for the next step
     onNext();
   };
 
@@ -128,19 +130,32 @@ export const AccountStep = ({ onNext, setUserName, setHandle }) => {
           className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" 
         />
         <input 
-          type="text" 
-          placeholder="Username" 
-          value={usernameInput}
-          onChange={(e) => setUsernameInput(e.target.value)}
+          type="email" 
+          placeholder="Email Address" 
+          value={emailInput}
+          onChange={(e) => setEmailInput(e.target.value)}
           required 
           className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" 
         />
-        <input 
-          type="password" 
-          placeholder="Create Password" 
-          required 
-          className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100" 
-        />
+        
+        <div className="relative">
+          <input 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Create Password" 
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            required 
+            className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-pink-100 pr-12" 
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
         <button type="submit" className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold hover:bg-[#c1325d] transition-colors mt-2">
           Continue
         </button>
@@ -186,18 +201,18 @@ export const PersonalizeStep = ({ onNext }) => {
   );
 };
 
-// 7. Final Success Step
+// 7. Final Success Step - FIXED: Now saves 'email' key explicitly
 export const FinalSuccessStep = ({ userName, handle, role, babyAge }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const userData = {
       name: userName || 'New User',
-      username: handle || '', 
+      email: handle || '', // FIXED: Changed key from 'username' to 'email'
       role: role,
-      // Save the actual age from the onboarding process
+      isPregnancy: role === 'pregnant',
       babyAgeMonths: babyAge || 0, 
-      pregnancyWeek: role === 'pregnant' ? 8 : null, // Default or dynamic
+      pregnancyWeek: role === 'pregnant' ? 12 : null, // Default starting week
       onboardedAt: new Date().toISOString()
     };
 
@@ -211,7 +226,6 @@ export const FinalSuccessStep = ({ userName, handle, role, babyAge }) => {
     return () => clearTimeout(timer);
   }, [navigate, userName, handle, role, babyAge]);
 
-  
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
       <div className="bg-pink-50 p-6 rounded-full mb-6 relative">

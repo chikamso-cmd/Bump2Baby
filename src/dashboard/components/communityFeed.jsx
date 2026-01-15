@@ -1,26 +1,133 @@
 import React, { useState } from 'react';
-import { Search, MessageCircle, Heart, TrendingUp, Clock, CheckCircle2 } from 'lucide-react';
+import { Search, MessageCircle, Heart, ThumbsUp, Send, CheckCircle2, X } from 'lucide-react';
 
-// Added 'posts' as a prop to receive real-time data from MainRender
+// Sub-component for individual posts to manage local interaction state
+const PostCard = ({ post }) => {
+  const [likes, setLikes] = useState(post.likes || 0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [replyText, setReplyText] = useState('');
+  const [localReplies, setLocalReplies] = useState([]);
+
+  const handleLike = () => {
+    if (!isLiked) {
+      setLikes(prev => prev + 1);
+      setIsLiked(true);
+    } else {
+      setLikes(prev => prev - 1);
+      setIsLiked(false);
+    }
+  };
+
+  const handleReplySubmit = (e) => {
+    e.preventDefault();
+    if (!replyText.trim()) return;
+    
+    const newReply = {
+      id: Date.now(),
+      text: replyText,
+      user: "You", // In a real app, this would be the logged-in user
+      date: "Just now"
+    };
+    
+    setLocalReplies([newReply, ...localReplies]);
+    setReplyText('');
+    // We keep the input open so they can see their reply added
+  };
+
+  return (
+    <div className="bg-white rounded-[24px] md:rounded-[32px] p-6 md:p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group animate-in slide-in-from-bottom-2 duration-300">
+      {/* Category Badges */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="px-3 py-1 rounded-lg border border-pink-100 text-[#D5335E] text-[10px] font-bold uppercase tracking-wider">
+          {post.category}
+        </div>
+        {post.isHelpful && (
+          <div className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold border border-green-100">
+            <CheckCircle2 size={12} /> Helpful
+          </div>
+        )}
+      </div>
+
+      <h2 className="text-lg md:text-xl font-extrabold text-slate-800 mb-2 leading-tight group-hover:text-[#D5335E] transition-colors">
+        {post.title}
+      </h2>
+      <p className="text-slate-500 text-sm md:text-base mb-6 leading-relaxed">
+        {post.content}
+      </p>
+      
+      {/* Interaction Bar */}
+      <div className="flex items-center gap-4 md:gap-6 pt-5 border-t border-gray-50 text-gray-400 text-[11px] md:text-sm font-medium">
+        <span className="font-bold text-slate-700">{post.user}</span>
+        
+        <button 
+          onClick={() => setShowReplyInput(!showReplyInput)}
+          className={`flex items-center gap-1.5 transition-colors ${showReplyInput ? 'text-blue-500' : 'hover:text-blue-500'}`}
+        >
+          <MessageCircle size={16}/> {(post.replies || 0) + localReplies.length} replies
+        </button>
+
+        <button 
+          onClick={handleLike}
+          className={`flex items-center gap-1.5 transition-all active:scale-125 ${isLiked ? 'text-pink-500' : 'hover:text-pink-500'}`}
+        >
+          <Heart size={16} className={isLiked ? "fill-current" : ""} /> {likes}
+        </button>
+
+        <span className="ml-auto text-gray-300 text-[10px]">{post.date}</span>
+      </div>
+
+      {/* Reply Section */}
+      {showReplyInput && (
+        <div className="mt-6 pt-4 border-t border-gray-50 animate-in fade-in slide-in-from-top-2">
+          <form onSubmit={handleReplySubmit} className="flex gap-2 mb-4">
+            <input 
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder="Write a helpful reply..."
+              className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-100 focus:bg-white transition-all"
+            />
+            <button 
+              type="submit"
+              className="bg-[#D5335E] text-white p-2 rounded-xl hover:bg-[#b82a50] transition-colors"
+            >
+              <Send size={18} />
+            </button>
+          </form>
+
+          {/* Render local replies */}
+          <div className="space-y-3">
+            {localReplies.map(reply => (
+              <div key={reply.id} className="bg-slate-50 p-3 rounded-2xl border border-slate-100 ml-4">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[10px] font-bold text-slate-700">{reply.user}</span>
+                  <span className="text-[9px] text-slate-400">{reply.date}</span>
+                </div>
+                <p className="text-xs text-slate-600">{reply.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CommunityFeed = ({ onNavigate, posts = [] }) => {
   const categories = ["All", "Pregnancy", "New Parents", "Health & Wellness", "General"];
-  
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Use the 'posts' prop instead of the hardcoded static list
   const filteredPosts = posts.filter((post) => {
-    const matchesSearch = 
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const titleMatch = post.title?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+    const contentMatch = post.content?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
     const matchesCategory = activeCategory === "All" || post.category === activeCategory;
-    
-    return matchesSearch && matchesCategory;
+    return (titleMatch || contentMatch) && matchesCategory;
   });
 
   return (
-    <div className="animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
+    <div className="animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen pb-24">
       <main className="max-w-5xl mx-auto p-4 md:p-8">
         
         {/* Category Filters */}
@@ -71,35 +178,7 @@ const CommunityFeed = ({ onNavigate, posts = [] }) => {
         <div className="space-y-6">
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
-              <div 
-                key={post.id} 
-                className="bg-white rounded-[24px] md:rounded-[32px] p-6 md:p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group animate-in slide-in-from-bottom-2 duration-300"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="px-3 py-1 rounded-lg border border-pink-100 text-[#D5335E] text-[10px] font-bold uppercase tracking-wider">
-                    {post.category}
-                  </div>
-                  {post.isHelpful && (
-                    <div className="flex items-center gap-1 px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold border border-green-100">
-                      <CheckCircle2 size={12} /> Helpful
-                    </div>
-                  )}
-                </div>
-
-                <h2 className="text-lg md:text-xl font-extrabold text-slate-800 mb-2 leading-tight group-hover:text-[#D5335E] transition-colors">
-                  {post.title}
-                </h2>
-                <p className="text-slate-500 text-sm md:text-base mb-6 leading-relaxed">
-                  {post.content}
-                </p>
-                
-                <div className="flex items-center gap-4 md:gap-6 pt-5 border-t border-gray-50 text-gray-400 text-[11px] md:text-sm font-medium">
-                  <span className="font-bold text-slate-700">{post.user}</span>
-                  <div className="flex items-center gap-1.5"><MessageCircle size={16}/> {post.replies || 0} replies</div>
-                  <div className="flex items-center gap-1.5"><Heart size={16}/> {post.likes || 0}</div>
-                  <span className="ml-auto text-gray-300 text-[10px]">{post.date}</span>
-                </div>
-              </div>
+              <PostCard key={post.id} post={post} />
             ))
           ) : (
             <div className="text-center py-20 bg-white rounded-[40px] border border-dashed border-gray-200">
