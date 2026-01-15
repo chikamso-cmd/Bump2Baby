@@ -2,8 +2,15 @@ import React from "react";
 import { Bell, LogOut, User } from "lucide-react";
 import logo from "../../assets/Logo.png";
 import { Link } from "react-router-dom";
-import HospitalFinder from "../../hospital/HospitalFinder";
-const Header = ({ onNavigate, activeView }) => {
+
+// ADDED: 'user' prop here to receive data from MainRender
+const Header = ({ onNavigate, activeView, user }) => {
+  
+  // Logic to get initials if there is no profile picture
+  const initials = user?.name 
+    ? user.name.split(" ").map(n => n[0]).join("") 
+    : "M";
+
   return (
     <header className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
       <div className="flex items-center gap-2 cursor-pointer">
@@ -72,13 +79,26 @@ const Header = ({ onNavigate, activeView }) => {
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
         </Link>
-        <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
-          <Link to="/profile">
-            <div className="w-8 h-8 bg-pink-600 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-[#ffffff]" />
+
+        {/* UPDATED: Profile Avatar Section */}
+        <Link to="/profile">
+          <button className="p-1 text-gray-500 hover:bg-gray-100 rounded-full transition-all">
+            <div className="w-9 h-9 bg-pink-600 rounded-full flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
+              {user?.profilePic ? (
+                <img 
+                  src={user.profilePic} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover" 
+                />
+              ) : (
+                <span className="text-white text-xs font-bold uppercase">
+                  {initials}
+                </span>
+              )}
             </div>
-          </Link>
-        </button>
+          </button>
+        </Link>
+
         <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
           <LogOut className="w-5 h-5" />
         </button>

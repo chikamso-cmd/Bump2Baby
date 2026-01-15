@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import ProfileMain from "./components/ProfileMain";
@@ -7,21 +7,52 @@ import Preferences from "./components/Preference";
 import AccountActions from "./components/AccountsAction";
 import Toast from "./components/Toast";
 import BottomNav from "../components/BottomNav";
-// import { Page } from '../types';
 
 const Profile = () => {
   const [currentPage, setCurrentPage] = useState("profile");
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    name: "Sarah Martinez",
-    email: "sarah.martinez@email.com",
-    status: {
-      type: "Pregnant",
-      stage: "Trimester 2, Week 18",
-      isActive: true,
-    },
+
+  // UPDATE: Logic to find the email even if keys are slightly different
+  const [user, setUser] = useState(() => {
+    const savedData = localStorage.getItem('bump2baby_user');
+    
+    // DEBUG LOG: Remove this once fixed
+    console.log("Raw Storage Data:", savedData);
+
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        return {
+          ...parsed,
+          // Fallback logic for name and email keys
+          name: parsed.name || parsed.fullName || "User",
+          email: parsed.email || parsed.userEmail || parsed.emailAddress || "", 
+          profilePic: parsed.profilePic || null,
+          status: parsed.status || { 
+            type: parsed.isPregnancy === false ? "Mother" : "Pregnant", 
+            stage: parsed.pregnancyWeek ? `Week ${parsed.pregnancyWeek}` : "Getting started" 
+          }
+        };
+      } catch (e) {
+        console.error("Parsing error", e);
+      }
+    }
+    return { name: "", email: "", profilePic: null, status: { type: "", stage: "" } };
   });
+
+  useEffect(() => {
+    const syncUser = () => {
+      const savedData = localStorage.getItem('bump2baby_user');
+      if (savedData) {
+        setUser(JSON.parse(savedData));
+      }
+    };
+    
+    syncUser();
+    window.addEventListener('storage', syncUser);
+    return () => window.removeEventListener('storage', syncUser);
+  }, []);
 
   const [notifications, setNotifications] = useState({
     healthTips: true,
@@ -32,7 +63,7 @@ const Profile = () => {
   const handleNavigate = useCallback(
     (page) => {
       if (page === "dashboard") {
-        navigate("/dashboard");
+        navigate("/app");
       } else {
         setCurrentPage(page);
       }
@@ -41,8 +72,21 @@ const Profile = () => {
     [navigate]
   );
 
+  const handleImageUpload = useCallback((imageData) => {
+    setUser(prev => {
+      const updated = { ...prev, profilePic: imageData };
+      localStorage.setItem('bump2baby_user', JSON.stringify(updated));
+      return updated;
+    });
+    setShowToast(true);
+  }, []);
+
   const handleSaveProfile = useCallback((newData) => {
-    setUser((prev) => ({ ...prev, ...newData }));
+    setUser(prev => {
+      const updated = { ...prev, ...newData };
+      localStorage.setItem('bump2baby_user', JSON.stringify(updated));
+      return updated;
+    });
     setCurrentPage("profile");
     setShowToast(true);
   }, []);
@@ -55,52 +99,37 @@ const Profile = () => {
   }, []);
 
   const handleLogout = () => {
-    alert("Logging out...");
+    localStorage.removeItem('bump2baby_user');
+    localStorage.removeItem('bump2baby_onboarded');
+    navigate('/login');
   };
 
   const renderPage = () => {
     switch (currentPage) {
       case "profile":
-        return <ProfileMain user={user} onNavigate={handleNavigate} />;
+        return <ProfileMain user={user} onNavigate={handleNavigate} onImageUpload={handleImageUpload} />;
       case "edit-profile":
-        return (
-          <EditProfile
-            user={user}
-            onBack={() => setCurrentPage("profile")}
-            onSave={handleSaveProfile}
-          />
-        );
+        return <EditProfile user={user} onBack={() => setCurrentPage("profile")} onSave={handleSaveProfile} onImageUpload={handleImageUpload} />;
       case "preferences":
-        return (
-          <Preferences
-            settings={notifications}
-            onBack={() => setCurrentPage("profile")}
-            onUpdate={handleUpdatePreference}
-          />
-        );
+        return <Preferences settings={notifications} onBack={() => setCurrentPage("profile")} onUpdate={handleUpdatePreference} />;
       case "account-actions":
-        return (
-          <AccountActions
-            onBack={() => setCurrentPage("profile")}
-            onLogout={handleLogout}
-          />
-        );
+        return <AccountActions onBack={() => setCurrentPage("profile")} onLogout={handleLogout} />;
       default:
-        return <ProfileMain user={user} onNavigate={handleNavigate} />;
+        return <ProfileMain user={user} onNavigate={handleNavigate} onImageUpload={handleImageUpload} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFF]">
-      <Header />
+    <div className="min-h-screen bg-[#F8FAFF] pb-24">
+      <Header user={user} /> 
       <main className="max-w-2xl mx-auto px-6 py-12 md:py-20">
         {renderPage()}
       </main>
 
       {showToast && (
         <Toast
-          message="Profile updated successfully!"
-          description="Your changes have been saved."
+          message="Update Successful!"
+          description="Your profile changes have been saved."
           onClose={() => setShowToast(false)}
         />
       )}
