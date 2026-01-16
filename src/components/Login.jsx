@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-import { Eye, EyeOff } from "lucide-react"; // Import Eye icons
+import { Eye, EyeOff } from "lucide-react"; 
+import Logo from '../assets/Logo.png'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -36,12 +37,7 @@ const Login = () => {
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center py-12 px-4">
       {/* Brand Logo */}
       <div className="flex items-center gap-2 mb-12 self-start ml-4 md:ml-20 cursor-pointer" onClick={() => navigate('/')}>
-        <div className="bg-[#D83D6C] p-1.5 rounded-lg">
-           <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-           </svg>
-        </div>
-        <span className="text-xl font-bold text-[#D83D6C]">Bump2baby</span>
+        <img src={Logo} alt="" className="w-50"/>
       </div>
 
       {/* Login Card */}
