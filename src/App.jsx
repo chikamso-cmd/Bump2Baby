@@ -9,6 +9,7 @@ import CommunityFeed from './dashboard/components/communityFeed';
 import CreatePost from './dashboard/components/communityCreatePost';
 import HospitalFinder from './hospital/HospitalFinder';
 import AboutUs from './landingpage/AboutUs';
+import ContactUs from './landingpage/components/ContactUs';
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
 
         {/* 404 Redirect */}
         <Route path="*" element={<LandingPage />} />
+
+        <Route path="/contact" element={<ContactUs />} />
       </Routes>
     </BrowserRouter>
   );
