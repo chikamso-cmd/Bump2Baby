@@ -1,8 +1,17 @@
 
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CTA = () => {
+
+ const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    const onboarded = localStorage.getItem("bump2baby_onboarded");
+    navigate(onboarded === "true" ? "/dashboard" : "/home");
+  };
+
   return (
     <section className="py-24">
       <div className="max-w-7xl mx-auto">
@@ -11,14 +20,18 @@ const CTA = () => {
             Ready to Start your journey with confidence?
           </h2>
           <p className="text-lg md:text-xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Join Bump2baby today and get personalized support, expert guidance and a thriving community every step of the way.
+            Join Bump2baby today and get personalized support, expert guidance
+            and a thriving community every step of the way.
           </p>
-          
+
           <div className="flex flex-col items-center gap-6">
-            <button className="bg-white text-[#e83e8c] px-10 py-4 rounded-full text-lg font-bold flex items-center gap-2 hover:bg-gray-100 transition-all shadow-xl hover:scale-105">
+            <button
+              onClick={handleGetStarted}
+              className="bg-white text-[#e83e8c] px-10 py-4 rounded-full text-lg font-bold flex items-center gap-2 hover:bg-gray-100 transition-all shadow-xl hover:scale-105"
+            >
               Get Started <ArrowRight size={20} />
             </button>
-            
+
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-white/70">
               <span>Free to use</span>
               <span>•</span>
