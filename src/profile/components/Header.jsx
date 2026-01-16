@@ -1,13 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Added useNavigate
 import logo from '../../assets/Logo.png';
 
-// Receive 'user' as a prop from the parent (Profile.jsx or MainRender)
 const Header = ({ user }) => {
-  // Generate initials fallback if user object exists but no photo
+  const navigate = useNavigate(); // Initialize navigation
+
+  // Generate initials fallback
   const initials = user?.name
     ? user.name.split(" ").map((n) => n[0]).join("")
     : "U";
+
+  // NEW: Logout Functionality
+  const handleLogout = () => {
+    // 1. Clear session data
+    localStorage.removeItem('bump2baby_user');
+    localStorage.removeItem('bump2baby_onboarded');
+    
+    // 2. Redirect to login page
+    navigate('/login');
+  };
 
   return (
     <header className="bg-white border-b border-slate-100 py-4 px-6 md:px-12 sticky top-0 z-50">
@@ -33,7 +44,6 @@ const Header = ({ user }) => {
             <span className="absolute top-2 right-2 w-2 h-2 bg-[#D9437E] rounded-full"></span>
           </button>
           
-          {/* Updated Avatar Section */}
           <Link to="/profile" className="w-9 h-9 bg-[#D9437E] rounded-full flex items-center justify-center text-white overflow-hidden border border-slate-100 shadow-sm transition-transform hover:scale-105">
             {user?.profilePic ? (
               <img 
@@ -42,10 +52,31 @@ const Header = ({ user }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              /* Fallback to User Icon or Initials if no picture exists */
               <span className="text-xs font-bold uppercase">{initials}</span>
             )}
           </Link>
+
+          {/* NEW: Logout Button (The icon you marked in your screenshot) */}
+          <button 
+            onClick={handleLogout}
+            className="p-2 text-slate-400 hover:text-[#D9437E] hover:bg-slate-50 rounded-full transition-colors"
+            title="Logout"
+          >
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
         </div>
       </div>
     </header>

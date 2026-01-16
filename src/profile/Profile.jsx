@@ -13,34 +13,30 @@ const Profile = () => {
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
 
-  // UPDATE: Logic to find the email even if keys are slightly different
+  // Initialize state directly from localStorage to prevent "Sarah Martinez" from appearing
   const [user, setUser] = useState(() => {
     const savedData = localStorage.getItem('bump2baby_user');
-    
-    // DEBUG LOG: Remove this once fixed
-    console.log("Raw Storage Data:", savedData);
-
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
         return {
           ...parsed,
-          // Fallback logic for name and email keys
-          name: parsed.name || parsed.fullName || "User",
-          email: parsed.email || parsed.userEmail || parsed.emailAddress || "", 
+          name: parsed.name || "User",
+          email: parsed.email || "", // Uses the key we fixed in Steps.jsx
           profilePic: parsed.profilePic || null,
-          status: parsed.status || { 
-            type: parsed.isPregnancy === false ? "Mother" : "Pregnant", 
-            stage: parsed.pregnancyWeek ? `Week ${parsed.pregnancyWeek}` : "Getting started" 
+          status: parsed.status || {
+            type: parsed.role === 'pregnant' ? "Pregnant" : "Parent",
+            stage: parsed.pregnancyWeek ? `Week ${parsed.pregnancyWeek}` : "Active"
           }
         };
       } catch (e) {
-        console.error("Parsing error", e);
+        console.error("Error parsing user data", e);
       }
     }
     return { name: "", email: "", profilePic: null, status: { type: "", stage: "" } };
   });
 
+  // Keep state in sync with local storage
   useEffect(() => {
     const syncUser = () => {
       const savedData = localStorage.getItem('bump2baby_user');
@@ -48,8 +44,6 @@ const Profile = () => {
         setUser(JSON.parse(savedData));
       }
     };
-    
-    syncUser();
     window.addEventListener('storage', syncUser);
     return () => window.removeEventListener('storage', syncUser);
   }, []);
@@ -60,17 +54,14 @@ const Profile = () => {
     reminders: true,
   });
 
-  const handleNavigate = useCallback(
-    (page) => {
-      if (page === "dashboard") {
-        navigate("/app");
-      } else {
-        setCurrentPage(page);
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    },
-    [navigate]
-  );
+  const handleNavigate = useCallback((page) => {
+    if (page === "dashboard") {
+      navigate("/app");
+    } else {
+      setCurrentPage(page);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [navigate]);
 
   const handleImageUpload = useCallback((imageData) => {
     setUser(prev => {
@@ -92,15 +83,16 @@ const Profile = () => {
   }, []);
 
   const handleUpdatePreference = useCallback((key) => {
-    setNotifications((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
   }, []);
 
+  // UPDATED: Logout logic to redirect to Login page
   const handleLogout = () => {
+    // Clear all user session data
     localStorage.removeItem('bump2baby_user');
     localStorage.removeItem('bump2baby_onboarded');
+    
+    // Redirect to the /login route as defined in your App.jsx
     navigate('/login');
   };
 
@@ -133,7 +125,6 @@ const Profile = () => {
           onClose={() => setShowToast(false)}
         />
       )}
-
       <BottomNav />
     </div>
   );

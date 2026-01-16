@@ -1,15 +1,26 @@
 import React from "react";
 import { Bell, LogOut, User } from "lucide-react";
 import logo from "../../assets/Logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
 
 // ADDED: 'user' prop here to receive data from MainRender
 const Header = ({ onNavigate, activeView, user }) => {
-  
+  const navigate = useNavigate(); // Initialize navigation
+
   // Logic to get initials if there is no profile picture
   const initials = user?.name 
     ? user.name.split(" ").map(n => n[0]).join("") 
     : "M";
+
+  // ADDED: Logout Logic
+  const handleLogout = () => {
+    // 1. Clear session data
+    localStorage.removeItem('bump2baby_user');
+    localStorage.removeItem('bump2baby_onboarded');
+    
+    // 2. Redirect to login page
+    navigate('/login');
+  };
 
   return (
     <header className="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
@@ -99,7 +110,12 @@ const Header = ({ onNavigate, activeView, user }) => {
           </button>
         </Link>
 
-        <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+        {/* UPDATED: Logout Button now has the onClick handler */}
+        <button 
+          onClick={handleLogout}
+          className="p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 rounded-full transition-colors"
+          title="Logout"
+        >
           <LogOut className="w-5 h-5" />
         </button>
       </div>
