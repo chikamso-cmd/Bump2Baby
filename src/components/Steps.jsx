@@ -198,7 +198,7 @@ export const BabyAgeStep = ({ selected, onSelect, onNext }) => {
 };
 
 // 4. Account Step - FIXED: Added missing states and fixed Email logic
-export const AccountStep = ({ onNext, setUserName, setHandle }) => {
+export const AccountStep = ({ onNext, setUserName, setHandle, role }) => {
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState(""); // renamed from usernameInput
   const [passwordInput, setPasswordInput] = useState("");
@@ -215,9 +215,10 @@ export const AccountStep = ({ onNext, setUserName, setHandle }) => {
     try {
       // API Call
       await registerUser({
-        username: nameInput, // Using name as username for now based on available fields
+        name: nameInput,
         email: emailInput,
         password: passwordInput,
+        role: role,
       });
 
       // Continue flow on success
