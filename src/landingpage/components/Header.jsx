@@ -111,6 +111,14 @@ const Header = () => {
             >
               About us
             </button>
+
+            {/* UPDATED: Contact Us Desktop Link */}
+            <button
+              onClick={() => navigate("/contact")}
+              className="text-gray-700 hover:text-[#e83e8c] font-medium transition-colors"
+            >
+              Contact Us
+            </button>
           </nav>
 
           {/* CTA Button */}
@@ -198,6 +206,17 @@ const Header = () => {
               className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
             >
               About us
+            </button>
+
+            {/* UPDATED: Contact Us Mobile Link */}
+            <button
+              onClick={() => {
+                navigate("/contact");
+                setIsMenuOpen(false);
+              }}
+              className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
+            >
+              Contact Us
             </button>
 
             <div className="pt-4 px-3">
