@@ -11,7 +11,7 @@ const AccountActions = ({ onBack }) => {
     localStorage.removeItem('bump2baby_onboarded');
     localStorage.removeItem('bump2baby_user');
     // Using replace: true prevents the user from clicking "back" into the app
-    navigate('/', { replace: true });
+    navigate('/login', { replace: true });
   };
 
   return (
