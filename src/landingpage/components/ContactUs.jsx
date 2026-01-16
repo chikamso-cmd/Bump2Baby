@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './Header'; // This is the Nav from your screenshot
 import Footer from './Footer'; // Adding the footer too for a complete look
 
+
+
 const ContactUs = () => {
+const [subject, setSubject] = useState("");
+
   return (
+    
     <div className="min-h-screen bg-white">
       {/* This adds the Nav bar with 'Home', 'Features', 'About Us' and 'Get Started' */}
       <Header /> 
@@ -27,6 +32,34 @@ const ContactUs = () => {
               <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
               <input type="email" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-[#D9437E] outline-none" placeholder="email@example.com" />
             </div>
+
+            <div>
+  <label className="block text-sm font-medium text-slate-700 mb-2">Subject</label>
+  <div className="relative">
+    <select 
+      required
+      value={subject}
+      onChange={(e) => setSubject(e.target.value)}
+      /* Logic: If subject is empty, use text-slate-400 (placeholder color), else use text-slate-900 (normal color) */
+      className={`w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-[#D9437E] outline-none appearance-none transition-colors ${
+        subject === "" ? "text-slate-400" : "text-slate-900"
+      }`}
+    >
+      <option value="" disabled hidden>Select a subject</option>
+      <option value="support" className="text-slate-900">App Support</option>
+      <option value="medical" className="text-slate-900">Medical Inquiry</option>
+      <option value="feedback" className="text-slate-900">Feedback & Suggestions</option>
+      <option value="other" className="text-slate-900">Other</option>
+    </select>
+    
+    {/* Custom Arrow */}
+    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </div>
+  </div>
+</div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
               <textarea className="w-full p-4 bg-slate-50 border-none rounded-2xl h-40 focus:ring-2 focus:ring-[#D9437E] outline-none resize-none" placeholder="How can we help?"></textarea>
