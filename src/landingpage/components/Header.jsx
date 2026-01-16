@@ -112,7 +112,7 @@ const Header = () => {
               About us
             </button>
 
-            {/* UPDATED: Contact Us Desktop Link */}
+            {/* Contact Us Desktop Link */}
             <button
               onClick={() => navigate("/contact")}
               className="text-gray-700 hover:text-[#e83e8c] font-medium transition-colors"
@@ -121,13 +121,13 @@ const Header = () => {
             </button>
           </nav>
 
-          {/* CTA Button */}
+          {/* Desktop CTA Button - Changed text to Login */}
           <div className="hidden md:block">
             <button
               onClick={handleGetStarted}
-              className="bg-[#e83e8c] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#d63384] transition-all transform hover:scale-105 shadow-sm hover:shadow-md"
+              className="bg-[#e83e8c] text-white px-8 py-2.5 rounded-full font-bold hover:bg-[#d63384] transition-all transform hover:scale-105 shadow-md shadow-pink-100"
             >
-              Get Started
+              Login
             </button>
           </div>
 
@@ -208,7 +208,6 @@ const Header = () => {
               About us
             </button>
 
-            {/* UPDATED: Contact Us Mobile Link */}
             <button
               onClick={() => {
                 navigate("/contact");
@@ -219,12 +218,16 @@ const Header = () => {
               Contact Us
             </button>
 
+            {/* Mobile Login Button */}
             <div className="pt-4 px-3">
               <button
-                onClick={handleGetStarted}
+                onClick={() => {
+                  handleGetStarted();
+                  setIsMenuOpen(false);
+                }}
                 className="w-full bg-[#e83e8c] text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-pink-200"
               >
-                Get Started
+                Login
               </button>
             </div>
           </div>
