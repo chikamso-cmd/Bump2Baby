@@ -16,9 +16,30 @@ const Header = () => {
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleGetStarted = () => {
+  /**
+   * STRICT PROTECTION LOGIC
+   * This is the "gatekeeper" function.
+   */
+  const handleProtectedNavigation = (path) => {
+    // 1. Get the token
+    const token = localStorage.getItem("token");
     const onboarded = localStorage.getItem("bump2baby_onboarded");
-    navigate(onboarded === "true" ? "/dashboard" : "/home");
+
+    // 2. STRICTOR CHECK: If token is missing, null, empty string, or literally "undefined"
+    // This forces anyone without a fresh, valid token to the login page.
+    if (!token || token === "" || token === "undefined" || token === "null") {
+      navigate("/login");
+    } 
+    // 3. If they are logged in but haven't finished the onboarding flow
+    else if (onboarded !== "true") {
+      navigate("/home");
+    } 
+    // 4. Only if both checks pass do they see the dashboard/feature
+    else {
+      navigate(path);
+    }
+    
+    setIsMenuOpen(false);
   };
 
   const features = [
@@ -85,19 +106,15 @@ const Header = () => {
                   {features.map((feature) => (
                     <button
                       key={feature.name}
-                      onClick={() => navigate(feature.path)}
+                      onClick={() => handleProtectedNavigation(feature.path)}
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-pink-50 transition-colors group/item w-full text-left"
                     >
                       <div className="p-2 bg-pink-100 rounded-lg text-[#e83e8c] group-hover/item:bg-[#e83e8c] group-hover/item:text-white transition-colors">
                         <feature.icon size={20} />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gray-900">
-                          {feature.name}
-                        </p>
-                        <p className="text-[11px] text-gray-500">
-                          {feature.description}
-                        </p>
+                        <p className="text-sm font-bold text-gray-900">{feature.name}</p>
+                        <p className="text-[11px] text-gray-500">{feature.description}</p>
                       </div>
                     </button>
                   ))}
@@ -112,7 +129,6 @@ const Header = () => {
               About us
             </button>
 
-            {/* Contact Us Desktop Link */}
             <button
               onClick={() => navigate("/contact")}
               className="text-gray-700 hover:text-[#e83e8c] font-medium transition-colors"
@@ -121,17 +137,16 @@ const Header = () => {
             </button>
           </nav>
 
-          {/* Desktop CTA Button - Changed text to Login */}
+          {/* Login Button */}
           <div className="hidden md:block">
             <button
-              onClick={handleGetStarted}
+              onClick={() => handleProtectedNavigation("/dashboard")}
               className="bg-[#e83e8c] text-white px-8 py-2.5 rounded-full font-bold hover:bg-[#d63384] transition-all transform hover:scale-105 shadow-md shadow-pink-100"
             >
               Login
             </button>
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -148,28 +163,19 @@ const Header = () => {
         <div className="md:hidden bg-white border-b border-gray-100 animate-in slide-in-from-top duration-300 max-h-[calc(100vh-80px)] overflow-y-auto">
           <div className="px-4 pt-2 pb-6 space-y-1 sm:px-3">
             <button
-              onClick={() => {
-                navigate("/");
-                setIsMenuOpen(false);
-              }}
+              onClick={() => { navigate("/"); setIsMenuOpen(false); }}
               className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
             >
               Home
             </button>
 
-            {/* Mobile Features Dropdown */}
             <div className="border-b border-gray-50">
               <button
                 onClick={() => setIsFeaturesOpen(!isFeaturesOpen)}
                 className="flex items-center justify-between w-full px-3 py-4 text-base font-medium text-gray-700"
               >
                 Features
-                <ChevronDown
-                  size={18}
-                  className={`${
-                    isFeaturesOpen ? "rotate-180" : ""
-                  } transition-transform`}
-                />
+                <ChevronDown size={18} className={`${isFeaturesOpen ? "rotate-180" : ""} transition-transform`} />
               </button>
 
               {isFeaturesOpen && (
@@ -177,20 +183,13 @@ const Header = () => {
                   {features.map((feature) => (
                     <button
                       key={feature.name}
-                      onClick={() => {
-                        navigate(feature.path);
-                        setIsMenuOpen(false);
-                      }}
+                      onClick={() => handleProtectedNavigation(feature.path)}
                       className="flex items-center gap-3 w-full p-3 rounded-lg text-left"
                     >
                       <feature.icon size={20} className="text-[#e83e8c]" />
                       <div>
-                        <p className="text-sm font-bold text-gray-900">
-                          {feature.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {feature.description}
-                        </p>
+                        <p className="text-sm font-bold text-gray-900">{feature.name}</p>
+                        <p className="text-xs text-gray-500">{feature.description}</p>
                       </div>
                     </button>
                   ))}
@@ -199,32 +198,22 @@ const Header = () => {
             </div>
 
             <button
-              onClick={() => {
-                navigate("/about");
-                setIsMenuOpen(false);
-              }}
+              onClick={() => { navigate("/about"); setIsMenuOpen(false); }}
               className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
             >
               About us
             </button>
 
             <button
-              onClick={() => {
-                navigate("/contact");
-                setIsMenuOpen(false);
-              }}
+              onClick={() => { navigate("/contact"); setIsMenuOpen(false); }}
               className="block w-full text-left px-3 py-4 text-base font-medium text-gray-700 border-b border-gray-50"
             >
               Contact Us
             </button>
 
-            {/* Mobile Login Button */}
             <div className="pt-4 px-3">
               <button
-                onClick={() => {
-                  handleGetStarted();
-                  setIsMenuOpen(false);
-                }}
+                onClick={() => handleProtectedNavigation("/dashboard")}
                 className="w-full bg-[#e83e8c] text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-pink-200"
               >
                 Login
