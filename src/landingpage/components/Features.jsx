@@ -1,39 +1,60 @@
 import React from 'react';
 import { Calendar, Stethoscope, Users, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const features = [
   {
     icon: <Calendar className="w-6 h-6 text-white" />,
     title: 'Pregnancy & Baby Tracking',
-    description: 'Monitor your baby\'s development week-by-week with personalized insights and milestones tracking.',
+    description: "Monitor your baby's development week-by-week with personalized insights and milestones tracking.",
     bgColor: 'bg-[#e83e8c]',
-    view: 'DASHBOARD' // Navigates to main dashboard
+    path: '/dashboard' // Changed 'view' to 'path' for consistency
   },
   {
     icon: <Stethoscope className="w-6 h-6 text-white" />,
     title: 'Symptoms Checker',
     description: 'Get quick, reliable information about pregnancy symptoms with our AI-powered maternal health assistant.',
     bgColor: 'bg-[#9333ea]',
-    view: 'SYMPTOM_1' // Navigates to start of symptom flow
+    path: '/dashboard?view=SYMPTOM_INTRO' 
   },
   {
     icon: <Users className="w-6 h-6 text-white" />,
     title: 'Community Support',
     description: 'Connect with other parents, share experiences, and get support from a caring community.',
     bgColor: 'bg-[#06b6d4]',
-    view: 'COMMUNITY_INTRO' // Navigates to the feed
+    path: '/dashboard?view=COMMUNITY_INTRO'
   },
   {
     icon: <MapPin className="w-6 h-6 text-white" />,
     title: 'Hospital Finder',
     description: 'Locate trusted hospitals and healthcare providers near you with reviewed maternal care services.',
     bgColor: 'bg-[#8b5cf6]',
-    view: 'HOSPITALS' // Placeholder for future feature
+    path: '/dashboard?view=HOSPITAL_INTRO'
   }
 ];
 
-// 1. Accept onNavigate as a prop
-const Features = ({ onNavigate }) => {
+const Features = () => {
+  const navigate = useNavigate();
+
+  // THE SECURITY GATE
+  const handleProtectedNavigation = (path) => {
+    const token = localStorage.getItem("token");
+    const onboarded = localStorage.getItem("bump2baby_onboarded");
+
+    // If NO token, force login
+    if (!token || token === "" || token === "undefined" || token === "null") {
+      navigate("/login");
+    } 
+    // If logged in but not onboarded
+    else if (onboarded !== "true") {
+      navigate("/home");
+    } 
+    // If all good, let them through
+    else {
+      navigate(path);
+    }
+  };
+
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,8 +71,8 @@ const Features = ({ onNavigate }) => {
           {features.map((feature, idx) => (
             <div 
               key={idx} 
-              // 2. Add onClick to trigger navigation
-              onClick={() => onNavigate?.(feature.view)}
+              // Using our protection logic here
+              onClick={() => handleProtectedNavigation(feature.path)}
               className="p-8 rounded-3xl border border-gray-100 hover:border-[#e83e8c]/30 hover:shadow-xl transition-all duration-300 bg-white group cursor-pointer active:scale-95"
             >
               <div className={`${feature.bgColor} w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
