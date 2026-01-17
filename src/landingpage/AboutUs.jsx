@@ -75,19 +75,19 @@ const AboutUs = () => {
 
   const team = [
     {
-      name: "Sarah Martinez",
+      name: "Rawas Ololade",
       role: "CEO & Founder",
       bio: "Passionate advocate for maternal health with 15 years in healthcare tech.",
       img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&fit=crop",
     },
     {
-      name: "Dr. Elena Vance",
+      name: "Veronica Adibe",
       role: "Chief Medical Officer",
       bio: "Board-certified OB-GYN ensuring clinical accuracy in everything we build.",
       img: "https://images.unsplash.com/photo-1559839734-2b71f153673f?q=80&w=200&h=200&fit=crop",
     },
     {
-      name: "James Wilson",
+      name: "Oge Ayibiowu",
       role: "Product Designer",
       bio: "Focused on creating calming, intuitive experiences for expectant parents.",
       img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&h=200&fit=crop",
