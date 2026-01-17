@@ -6,18 +6,24 @@ import {
   Bell, ShieldCheck, Sparkles, Smartphone, Users, Lightbulb 
 } from "lucide-react";
 
-// const registerUser = async (userData) => {
-//   try {
-//     const response = await fetch('https://your-api.com/register', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(userData),
-//     });
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Registration failed", error);
-//   }
-// };
+// Register Logic (Cleaned up from merge conflict)
+const registerUser = async (userData) => {
+  // Uncomment this when you are ready to connect to your live backend
+  /*
+  try {
+    const response = await fetch("https://bump2baby.onrender.com/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Registration failed");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+  */
+};
 
 export const StepCard = ({ children }) => (
   <div className="bg-white rounded-[40px] shadow-sm p-8 md:p-12 w-full max-w-lg mx-auto flex flex-col items-center transition-all animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
@@ -25,7 +31,7 @@ export const StepCard = ({ children }) => (
   </div>
 );
 
-// 1. Welcome Step (Unchanged)
+// 1. Welcome Step
 export const WelcomeStep = ({ onNext }) => (
   <StepCard>
     <div className="bg-[#FFF0F4] p-4 rounded-full mb-6">
@@ -52,7 +58,7 @@ export const WelcomeStep = ({ onNext }) => (
   </StepCard>
 );
 
-// 2. Role Selection Step (Unchanged)
+// 2. Role Selection Step
 export const RoleStep = ({ selected, onSelect, onNext }) => {
   const roles = [
     { id: "pregnant", title: "Pregnant", desc: "Expecting and tracking your pregnancy", icon: "🤰" },
@@ -84,7 +90,7 @@ export const RoleStep = ({ selected, onSelect, onNext }) => {
   );
 };
 
-// 3. UPDATED: Trimester Selection Step (Based on Screenshot 114)
+// 3. Trimester Selection Step
 export const TrimesterStep = ({ selected, onSelect, onNext, onBack }) => {
   const trimesters = [
     { id: 1, label: '1-13 weeks', info: 'First trimester! your baby is developing rapidly!' },
@@ -126,7 +132,7 @@ export const TrimesterStep = ({ selected, onSelect, onNext, onBack }) => {
   );
 };
 
-// 4. UPDATED: Personalize Step
+// 4. Personalize Step
 export const PersonalizeStep = ({ onNext, onBack }) => {
   const [notifs, setNotifs] = useState(false);
   return (
@@ -160,30 +166,25 @@ export const PersonalizeStep = ({ onNext, onBack }) => {
   );
 };
 
-// 5. UPDATED: Final Success Step (Now handles data saving)
+// 5. Final Success Step
 export const FinalSuccessStep = ({ userName, handle, role, trimester }) => {
   const navigate = useNavigate();
 
-const handleFinish = () => {
-  // Map trimesters to a starting week number
-  const trimesterStartWeeks = { 1: 4, 2: 14, 3: 28 };
-  
-  const userData = {
-    name: userName || "Mama",
-    handle: handle || "",
-    role: role || "pregnant",
-    trimester: trimester || 1,
-    // We save the date they signed up to calculate "days" later
-    onboardingDate: new Date().toISOString(), 
-    startWeek: trimesterStartWeeks[trimester] || 4,
-    onboardedAt: new Date().toISOString()
+  const handleFinish = () => {
+    const trimesterStartWeeks = { 1: 4, 2: 14, 3: 28 };
+    const userData = {
+      name: userName || "Mama",
+      handle: handle || "",
+      role: role || "pregnant",
+      trimester: trimester || 1,
+      onboardingDate: new Date().toISOString(), 
+      startWeek: trimesterStartWeeks[trimester] || 4,
+      onboardedAt: new Date().toISOString()
+    };
+    localStorage.setItem("bump2baby_user", JSON.stringify(userData));
+    localStorage.setItem("bump2baby_onboarded", "true");
+    navigate("/app"); 
   };
-
-  localStorage.setItem("bump2baby_user", JSON.stringify(userData));
-  localStorage.setItem("bump2baby_onboarded", "true");
-  
-  navigate("/app"); 
-};
 
   return (
     <StepCard>
@@ -192,31 +193,28 @@ const handleFinish = () => {
         <div className="absolute inset-0 bg-pink-100 rounded-full animate-ping opacity-20"></div>
       </div>
       <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">You're all set, {userName.split(' ')[0] || 'Mary'}!</h2>
-      <p className="text-gray-400 text-xs mb-10 text-center max-w-[280px]">Your personalized journey starts now. We're here for you every step of the way.</p>
-      
+      <p className="text-gray-400 text-xs mb-10 text-center max-w-[280px]">Your personalized journey starts now.</p>
       <div className="grid grid-cols-3 gap-4 w-full mb-10">
         {[
-          { icon: <Smartphone size={18} />, label: 'Track progress', bg: 'bg-indigo-50', color: 'text-indigo-600' },
+          { icon: <Smartphone size={18} />, label: 'Track', bg: 'bg-indigo-50', color: 'text-indigo-600' },
           { icon: <Users size={18} />, label: 'Connect', bg: 'bg-blue-50', color: 'text-blue-600' },
           { icon: <Lightbulb size={18} />, label: 'Learn', bg: 'bg-orange-50', color: 'text-orange-600' }
         ].map((item, i) => (
           <div key={i} className="flex flex-col items-center gap-2 text-center">
             <div className={`p-3 rounded-xl ${item.bg} ${item.color}`}>{item.icon}</div>
-            <span className="text-[9px] font-bold text-gray-500 uppercase tracking-tighter leading-tight">{item.label}</span>
+            <span className="text-[9px] font-bold text-gray-500 uppercase">{item.label}</span>
           </div>
         ))}
       </div>
-
-      <button onClick={handleFinish} className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold hover:bg-[#c1325d] flex items-center justify-center gap-2 shadow-lg shadow-pink-100">
+      <button onClick={handleFinish} className="w-full bg-[#D83D6C] text-white py-4 rounded-full font-semibold hover:bg-[#c1325d] flex items-center justify-center gap-2">
         Go to Dashboard <FaHeart className="text-xs" />
       </button>
-      <p className="mt-6 text-[10px] text-gray-400 font-medium">Need help? we're here for you 24/7</p>
     </StepCard>
   );
 };
 
-// AccountStep (Keep existing logic)
-export const AccountStep = ({ onNext, setUserName, setHandle }) => {
+// 6. Account Step
+export const AccountStep = ({ onNext, setUserName, setHandle, role }) => {
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -229,6 +227,7 @@ export const AccountStep = ({ onNext, setUserName, setHandle }) => {
     setError("");
     setIsLoading(true);
     try {
+      // Currently local-only. Uncomment registerUser() logic to use API.
       setUserName(nameInput);
       if (setHandle) setHandle(emailInput);
       onNext();
@@ -245,8 +244,8 @@ export const AccountStep = ({ onNext, setUserName, setHandle }) => {
       <p className="text-gray-400 text-xs mb-8">Create your profile to continue</p>
       {error && <div className="w-full bg-red-50 text-red-500 text-xs p-3 rounded-xl mb-4 text-center">{error}</div>}
       <form onSubmit={handleSubmit} className="w-full space-y-4">
-        <input type="text" placeholder="Full Name" value={nameInput} onChange={(e) => setNameInput(e.target.value)} required className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:ring-1 focus:ring-pink-100" />
-        <input type="email" placeholder="Email Address" value={emailInput} onChange={(e) => setEmailInput(e.target.value)} required className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:ring-1 focus:ring-pink-100" />
+        <input type="text" placeholder="Full Name" value={nameInput} onChange={(e) => setNameInput(e.target.value)} required className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm" />
+        <input type="email" placeholder="Email Address" value={emailInput} onChange={(e) => setEmailInput(e.target.value)} required className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm" />
         <div className="relative">
           <input type={showPassword ? "text" : "password"} placeholder="Create Password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} required className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm pr-12" />
           <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400">{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>

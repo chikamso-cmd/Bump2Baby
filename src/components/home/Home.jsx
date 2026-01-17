@@ -22,7 +22,7 @@ const Home = () => {
     }
   }, [navigate]);
 
-  // numeric values 1-5 to align with progress bar
+  // Using numeric values 1-6 to keep the logic simple for the 5-step progress bar
   const [step, setStep] = useState(1);
   
   const [data, setData] = useState({
@@ -65,18 +65,18 @@ const Home = () => {
       case 4:
         return <AccountStep 
                  onNext={nextStep} 
+                 role={data.role}
                  setUserName={(name) => updateData({ fullName: name })} 
                  setHandle={(handle) => updateData({ username: handle })} 
                />;
       
       case 5:
         return <PersonalizeStep 
-                 onNext={nextStep} // Moves to step 6 (Success)
+                 onNext={nextStep} 
                  onBack={prevStep} 
                />;
 
       case 6:
-        // Now passing all collected data to be saved to localStorage
         return <FinalSuccessStep 
                  userName={data.fullName} 
                  handle={data.username}
@@ -89,7 +89,6 @@ const Home = () => {
     }
   };
 
-  // totalSteps for the progress bar (2-5)
   const totalSteps = 5;
 
   return (
@@ -99,10 +98,19 @@ const Home = () => {
       <div className="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-blue-50 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="w-full max-w-2xl relative z-10">
-        {/* Progress bar is visible from Role Selection (2) to Personalize (5) */}
+        {/* Progress bar and Back Button (Merged UI from Main) */}
         {step > 1 && step < 6 && (
           <div className="relative mb-8">
             <ProgressBar currentStep={step} totalSteps={totalSteps} />
+            <button
+              onClick={prevStep}
+              className="absolute top-0 left-0 p-1 text-gray-300 hover:text-gray-500 transition-colors"
+              title="Back"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
           </div>
         )}
         
